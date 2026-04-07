@@ -1,0 +1,2 @@
+// Preload asset
+export {};

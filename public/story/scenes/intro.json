@@ -1,0 +1,28 @@
+[
+  {
+    "id": "intro_1",
+    "bg": "image",
+    "char": [
+      { "id": "sample", "pose": "normal", "position": "center" }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Hello..."
+    },
+    "next": "intro_2"
+  },
+  {
+    "id": "intro_2",
+    "textbox": {
+      "text": "You finally woke up."
+    },
+    "next": "intro_3"
+  },
+  {
+    "id": "intro_3",
+    "choices": [
+      { "text": "Who are you?", "next": "intro_4" },
+      { "text": "Where am I?", "next": "intro_5" }
+    ]
+  }
+]
