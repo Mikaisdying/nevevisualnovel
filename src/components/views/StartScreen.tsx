@@ -1,4 +1,5 @@
 import { useGameStore } from '@/engine/store';
+import { Button } from '@/components/common/Button';
 
 export default function StartScreen() {
   const startGame = useGameStore((s) => s.startGame);
@@ -7,13 +8,15 @@ export default function StartScreen() {
     <div className="fixed inset-0 w-screen h-screen flex flex-col items-center justify-center gap-6 text-white bg-transparent">
       <h1 className="text-4xl font-bold">My Visual Novel</h1>
 
-      <button onClick={startGame} className="px-6 py-2 border">
+      <Button onClick={startGame} variant="outline" className="w-32">
         Start
-      </button>
-
-      <button className="px-6 py-2 border">Load</button>
-
-      <button className="px-6 py-2 border">Library</button>
+      </Button>
+      <Button variant="outline" className="w-32">
+        Load
+      </Button>
+      <Button variant="outline" className="w-32">
+        Library
+      </Button>
     </div>
   );
 }

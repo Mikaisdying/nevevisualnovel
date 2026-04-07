@@ -1,6 +1,6 @@
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/geist';
 
 @tailwind base;
 
@@ -13,7 +13,7 @@ body,
 #root {
   height: 100%;
   margin: 0;
-  overflow: hidden;
+  padding: 0;
 }
 
 @theme inline {
