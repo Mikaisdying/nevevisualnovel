@@ -1,4 +1,4 @@
-import { useGameStore } from '@/engine/store/gameStore';
+import { useGameStore } from '@/engine/store';
 
 export function useGame() {
   const sceneId = useGameStore((s) => s.currentSceneId);

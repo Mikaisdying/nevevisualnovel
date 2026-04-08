@@ -1,9 +1,10 @@
 export type CharacterPosition = 'left' | 'center' | 'right';
 
 export type CharacterState = {
-  id: string;
+  name: string;
   pose: string;
   position: CharacterPosition;
+  focus?: boolean;
 };
 
 export type Textbox = {
@@ -25,4 +26,10 @@ export type Scene = {
 
   next?: string;
   choices?: Choice[];
+};
+
+export type Chapter = {
+  id: string;
+  title: string;
+  scenes: Scene[];
 };

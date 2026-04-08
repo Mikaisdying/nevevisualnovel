@@ -33,11 +33,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   },
 
-  startGame: () => set({ started: true }),
+  startGame: () => set({ started: true, currentSceneId: 'intro_1' }),
 
   next: () => {
     const { currentSceneId, sceneMap } = get();
     const scene = sceneMap[currentSceneId];
+    // Nếu có choices thì không next tự động
+    if (scene?.choices && scene.choices.length > 0) return;
     if (scene?.next) {
       set({ currentSceneId: scene.next });
     }
