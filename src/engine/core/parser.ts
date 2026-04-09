@@ -1,4 +1,4 @@
-import type { Scene } from '../types/scene';
+import type { Scene } from '../../types/scene';
 
 export function buildSceneMap(scenes: Scene[]) {
   const map: Record<string, Scene> = {};

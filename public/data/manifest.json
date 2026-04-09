@@ -1,0 +1,16 @@
+{
+	"backgrounds": [
+		{
+			"id": "image",
+			"file": "image.png",
+			"name": "image"
+		}
+	],
+	"characters": [
+		{
+			"id": "sample",
+			"folder": "sample",
+			"name": "Sample"
+		}
+	]
+}

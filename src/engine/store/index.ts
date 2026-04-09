@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { loadStoryFiles } from '../core/loader';
 import { buildSceneMap } from '../core/parser';
-import type { Scene } from '../types/scene';
+import type { Scene } from '../../types/scene';
 
 type GameState = {
   started: boolean;
