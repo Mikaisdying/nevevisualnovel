@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ReactFlow,
   Background,
@@ -6,35 +7,25 @@ import {
   useNodesState,
   useEdgesState,
 } from '@xyflow/react';
-import React from 'react';
+import '@xyflow/react/dist/style.css';
 
-export default function FlowCanvas({ nodes, edges, setNodes, setEdges, onSelectNode }: any) {
-  const [rfNodes, , onNodesChange] = useNodesState(nodes);
-  const [rfEdges, setRfEdges, onEdgesChange] = useEdgesState(edges);
-
-  const onConnect = (connection: any) => {
-    setRfEdges((eds) => addEdge(connection, eds));
-  };
-
-  const onNodeClick = (_: any, node: any) => {
-    onSelectNode(node);
-  };
-
-  React.useEffect(() => setNodes(rfNodes), [rfNodes]);
-  React.useEffect(() => setEdges(rfEdges), [rfEdges]);
+export default function FlowCanvas() {
+  const nodes = [
+    {
+      id: '1',
+      position: { x: 250, y: 100 },
+      data: { label: 'Hello, React Flow!' },
+      type: 'default',
+    },
+  ];
+  const edges: never[] = [];
 
   return (
-    <ReactFlow
-      nodes={rfNodes}
-      edges={rfEdges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      onNodeClick={onNodeClick}
-      fitView
-    >
-      <Background />
-      <Controls />
-    </ReactFlow>
+    <div style={{ width: '100%', height: '100%' }}>
+      <ReactFlow nodes={nodes} edges={edges} fitView>
+        <Background />
+        <Controls />
+      </ReactFlow>
+    </div>
   );
 }

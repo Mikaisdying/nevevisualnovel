@@ -1,112 +1,65 @@
 'use client';
 
-import React from 'react';
-import { loadStoryList, loadStory } from '../api/story.api';
-import { flowToNodes } from '../utils/flowToNodes';
-
+import { useSidebar } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import {
-  SidebarProvider,
-  Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarTrigger,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
 } from '@/components/ui/sidebar';
 
-import { FileText, Image } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export default function SidebarPanel({ manifest, setNodes, setEdges }: any) {
-  const [stories, setStories] = React.useState<string[]>([]);
-  const [activeStory, setActiveStory] = React.useState<string | null>(null);
-
-  // load story list
-  React.useEffect(() => {
-    loadStoryList().then((data) => {
-      const list = Array.isArray(data?.stories) ? data.stories : [];
-      setStories(list);
-    });
-  }, []);
-
-  // load story
-  const handleLoadStory = async (name: string) => {
-    const data = await loadStory(name);
-    const { nodes, edges } = flowToNodes(data);
-
-    setNodes(nodes);
-    setEdges(edges);
-    setActiveStory(name);
-  };
+export default function SidebarPanel() {
+  const { state } = useSidebar();
+  const isCollapsed = state === 'collapsed';
 
   return (
-    <>
-      <Sidebar variant="inset" collapsible="none" className="min-h-0 overflow-hidden">
-        <SidebarContent className="p-2">
-          {/* ===== STORY ===== */}
+    <div
+      data-slot="sidebar"
+      className={cn(
+        'bg-sidebar text-sidebar-foreground flex h-full flex-col overflow-hidden',
+        isCollapsed ? 'items-center justify-start p-2' : 'p-2',
+      )}
+    >
+      <div className={cn('flex items-center', isCollapsed ? 'justify-center' : 'justify-between')}>
+        {!isCollapsed && <span className="px-2 text-sm font-medium">Editor</span>}
+        <SidebarTrigger className="shrink-0" />
+      </div>
+
+      {!isCollapsed && (
+        <SidebarContent className="mt-3 flex h-full flex-col">
+          {/* Story */}
           <SidebarGroup>
             <SidebarGroupLabel>Story</SidebarGroupLabel>
-
             <SidebarGroupContent>
-              <SidebarMenu>
-                {/* Title */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="gap-2" disabled>
-                    <FileText size={16} />
-                    Stories
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                {/* Story list */}
-                {stories.map((story) => (
-                  <SidebarMenuItem key={story}>
-                    <SidebarMenuButton
-                      onClick={() => handleLoadStory(story)}
-                      isActive={activeStory === story}
-                    >
-                      {story}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+              <div className="flex flex-col gap-1 px-1">
+                {Array.from({ length: 5 }, (_, i) => `Chapter ${i + 1}`).map((chapter) => (
+                  <Button key={chapter} variant="ghost" className="w-full justify-start">
+                    {chapter}
+                  </Button>
                 ))}
-              </SidebarMenu>
+              </div>
             </SidebarGroupContent>
           </SidebarGroup>
 
-          {/* ===== ASSETS ===== */}
+          {/* Asset */}
           <SidebarGroup>
-            <SidebarGroupLabel>Assets</SidebarGroupLabel>
-
+            <SidebarGroupLabel>Asset</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="gap-2" disabled>
-                    <Image size={16} />
-                    Library
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                {/* Backgrounds */}
-                {manifest?.backgrounds?.map((bg: any) => (
-                  <SidebarMenuItem key={bg.id}>
-                    <SidebarMenuButton>🖼 {bg.name}</SidebarMenuButton>
-                  </SidebarMenuItem>
+              <div className="flex flex-col gap-1 px-1">
+                {['Background', 'Characters', 'Audio'].map((item) => (
+                  <Button key={item} variant="ghost" className="w-full justify-start">
+                    {item}
+                  </Button>
                 ))}
-
-                {/* Characters */}
-                {manifest?.characters?.map((char: any) => (
-                  <SidebarMenuItem key={char.id}>
-                    <SidebarMenuButton>👤 {char.name}</SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
+              </div>
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-      </Sidebar>
-
-      <SidebarTrigger className="absolute top-2 left-2 z-20" />
-    </>
+      )}
+    </div>
   );
 }
