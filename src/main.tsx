@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { MantineProvider } from '@mantine/core';
-import '@mantine/core/styles.css';
+import 'antd/dist/reset.css';
+import { ConfigProvider } from 'antd';
 import Router from './router';
 import './styles/index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MantineProvider
-      defaultColorScheme="light"
-      theme={{ fontFamily: 'Geist Variable, sans-serif' }}
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: 'Geist Variable, sans-serif',
+        },
+      }}
     >
       <Router />
-    </MantineProvider>
+    </ConfigProvider>
   </React.StrictMode>,
 );

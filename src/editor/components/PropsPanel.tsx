@@ -1,30 +1,29 @@
 'use client';
 
-import { Paper, Stack, Text, TextInput } from '@mantine/core';
+import { Card, Input, Space, Typography } from 'antd';
 
 export default function PropsPanel() {
   return (
-    <Paper
-      radius={0}
-      className="flex h-full min-h-0 flex-col gap-4 border-l bg-white/95 p-4 backdrop-blur"
+    <Card
+      bordered={false}
+      className="flex h-full min-h-0 flex-col gap-4 border-0 bg-white/95 p-4 backdrop-blur"
+      styles={{ body: { height: '100%', padding: 0 } }}
     >
-      <Text size="lg" fw={700}>
+      <Typography.Title level={4} style={{ marginTop: 0 }}>
         Properties
-      </Text>
+      </Typography.Title>
 
-      <Stack gap="sm">
-        <Text size="sm" fw={500} c="dimmed">
-          Name
-        </Text>
-        <TextInput placeholder="Node name..." />
-      </Stack>
+      <Space direction="vertical" size={12} className="w-full">
+        <div>
+          <Typography.Text type="secondary">Name</Typography.Text>
+          <Input className="mt-2" placeholder="Node name..." />
+        </div>
 
-      <Stack gap="sm">
-        <Text size="sm" fw={500} c="dimmed">
-          Value
-        </Text>
-        <TextInput placeholder="Some value..." />
-      </Stack>
-    </Paper>
+        <div>
+          <Typography.Text type="secondary">Value</Typography.Text>
+          <Input className="mt-2" placeholder="Some value..." />
+        </div>
+      </Space>
+    </Card>
   );
 }
