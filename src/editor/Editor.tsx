@@ -1,42 +1,38 @@
-'use client';
-
-import { SidebarProvider, useSidebar } from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
+import { AppShell, Box } from '@mantine/core';
 
 import SidebarPanel from './components/SidebarPanel';
 import FlowCanvas from './components/FlowCanvas';
 import PropsPanel from './components/PropsPanel';
 
-function EditorLayout() {
-  const { state } = useSidebar();
-  const isCollapsed = state === 'collapsed';
-
+function EditorContent() {
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      <aside
-        className={cn(
-          'shrink-0 border-r transition-[width] duration-200 ease-linear',
-          isCollapsed ? 'w-14' : 'w-[14rem]',
-        )}
-      >
-        <SidebarPanel />
-      </aside>
-
-      <main className="min-w-0 flex-1">
+    <Box className="relative h-full min-h-0 min-w-0 overflow-hidden">
+      <Box className="relative h-full min-h-0 min-w-0 flex-1 overflow-hidden">
         <FlowCanvas />
-      </main>
+      </Box>
 
-      <aside className="w-80 shrink-0 border-l">
+      <Box className="absolute top-0 right-0 h-full min-h-0 w-80 shrink-0 overflow-y-auto border-l bg-white/95 backdrop-blur">
         <PropsPanel />
-      </aside>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
 export default function Editor() {
   return (
-    <SidebarProvider defaultOpen>
-      <EditorLayout />
-    </SidebarProvider>
+    <AppShell
+      header={{ height: 0 }}
+      navbar={{ width: 240, breakpoint: 0 }}
+      padding={0}
+      className="h-screen overflow-hidden bg-slate-50"
+    >
+      <AppShell.Navbar p={0} withBorder={false}>
+        <SidebarPanel />
+      </AppShell.Navbar>
+
+      <AppShell.Main className="h-screen min-h-0 min-w-0 overflow-hidden p-0">
+        <EditorContent />
+      </AppShell.Main>
+    </AppShell>
   );
 }

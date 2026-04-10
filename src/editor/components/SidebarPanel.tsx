@@ -1,65 +1,191 @@
 'use client';
 
-import { useSidebar } from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
+import { useMemo, useState, type ComponentType } from 'react';
+import { AlignLeft, ChevronDown, FolderOpen, Plus } from 'lucide-react';
 import {
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+  ActionIcon,
+  Box,
+  Button,
+  Collapse,
+  Group,
+  Paper,
+  ScrollArea,
+  Stack,
+  Text,
+} from '@mantine/core';
 
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+type NestedLink = {
+  label: string;
+  active?: boolean;
+  icon?: ComponentType<{ className?: string }>;
+};
+
+type NestedGroup = {
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  initiallyOpened?: boolean;
+  onAdd?: () => void;
+  links: NestedLink[];
+};
+
+const mockdata: NestedGroup[] = [
+  {
+    label: 'Story',
+    icon: AlignLeft,
+    initiallyOpened: true,
+    onAdd: () => {},
+    links: Array.from({ length: 5 }, (_, index) => ({
+      label: `Chapter ${index + 1}`,
+      active: index === 0,
+    })),
+  },
+  {
+    label: 'Assets',
+    icon: FolderOpen,
+    initiallyOpened: true,
+    links: [{ label: 'Backgrounds' }, { label: 'Characters' }, { label: 'Audio' }],
+  },
+];
+
+const linkBase =
+  'group flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-normal transition-colors';
+
+const linkHover = 'hover:bg-slate-100 hover:text-slate-900';
+
+const sectionIconClass =
+  'h-3 w-3 shrink-0 text-slate-400 transition-colors group-hover:text-slate-200';
+
+function NestedLinksGroup({
+  icon: Icon,
+  label,
+  opened,
+  onToggle,
+  onAdd,
+  links,
+}: NestedGroup & {
+  opened: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <Box>
+      <Button
+        variant="subtle"
+        color="gray"
+        fullWidth
+        radius={0}
+        className="w-full px-0"
+        onClick={onToggle}
+      >
+        <Group justify="space-between" px="sm" py={8} gap="xs" wrap="nowrap" className="w-full">
+          <Group
+            gap={6}
+            wrap="nowrap"
+            className="text-[11px] tracking-[0.18em] text-slate-400 uppercase"
+          >
+            <Icon className={sectionIconClass} />
+            {label}
+          </Group>
+
+          <Group gap={4} wrap="nowrap">
+            {onAdd && (
+              <ActionIcon
+                variant="subtle"
+                size="sm"
+                radius="md"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onAdd();
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </ActionIcon>
+            )}
+
+            <ChevronDown
+              className={cn(
+                'h-3.5 w-3.5 text-slate-400 transition-transform',
+                opened && 'rotate-180',
+              )}
+            />
+          </Group>
+        </Group>
+      </Button>
+
+      <Collapse expanded={opened}>
+        <Stack gap={4} py={4}>
+          {links.map((link) => (
+            <Button
+              key={link.label}
+              variant="subtle"
+              color="gray"
+              fullWidth
+              justify="flex-start"
+              radius="md"
+              leftSection={undefined}
+              rightSection={undefined}
+              className={cn(
+                linkBase,
+                link.active ? 'bg-slate-200 text-slate-950' : cn('text-slate-600', linkHover),
+              )}
+            >
+              <span className="flex-1 truncate text-left font-normal">{link.label}</span>
+            </Button>
+          ))}
+        </Stack>
+      </Collapse>
+    </Box>
+  );
+}
 
 export default function SidebarPanel() {
-  const { state } = useSidebar();
-  const isCollapsed = state === 'collapsed';
+  const [opened, setOpened] = useState<Record<string, boolean>>(() => {
+    return Object.fromEntries(mockdata.map((item) => [item.label, item.initiallyOpened ?? false]));
+  });
+
+  const groups = useMemo(
+    () =>
+      mockdata.map((item) => ({
+        ...item,
+        opened: opened[item.label] ?? false,
+      })),
+    [opened],
+  );
 
   return (
-    <div
-      data-slot="sidebar"
-      className={cn(
-        'bg-sidebar text-sidebar-foreground flex h-full flex-col overflow-hidden',
-        isCollapsed ? 'items-center justify-start p-2' : 'p-2',
-      )}
+    <Paper
+      radius={0}
+      className="flex h-full w-[240px] flex-col border-r border-slate-200 bg-slate-50"
     >
-      <div className={cn('flex items-center', isCollapsed ? 'justify-center' : 'justify-between')}>
-        {!isCollapsed && <span className="px-2 text-sm font-medium">Editor</span>}
-        <SidebarTrigger className="shrink-0" />
-      </div>
+      <Group px="sm" py={12} className="border-b border-slate-200">
+        <Text size="xs" fw={600} className="tracking-[0.2em] text-slate-400 uppercase">
+          Project
+        </Text>
+      </Group>
 
-      {!isCollapsed && (
-        <SidebarContent className="mt-3 flex h-full flex-col">
-          {/* Story */}
-          <SidebarGroup>
-            <SidebarGroupLabel>Story</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <div className="flex flex-col gap-1 px-1">
-                {Array.from({ length: 5 }, (_, i) => `Chapter ${i + 1}`).map((chapter) => (
-                  <Button key={chapter} variant="ghost" className="w-full justify-start">
-                    {chapter}
-                  </Button>
-                ))}
-              </div>
-            </SidebarGroupContent>
-          </SidebarGroup>
-
-          {/* Asset */}
-          <SidebarGroup>
-            <SidebarGroupLabel>Asset</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <div className="flex flex-col gap-1 px-1">
-                {['Background', 'Characters', 'Audio'].map((item) => (
-                  <Button key={item} variant="ghost" className="w-full justify-start">
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      )}
-    </div>
+      <ScrollArea className="flex-1">
+        <Box className="p-2">
+          <Stack gap={4}>
+            {groups.map((group) => (
+              <NestedLinksGroup
+                key={group.label}
+                icon={group.icon}
+                label={group.label}
+                links={group.links}
+                opened={group.opened}
+                onToggle={() =>
+                  setOpened((current) => ({
+                    ...current,
+                    [group.label]: !current[group.label],
+                  }))
+                }
+                onAdd={group.onAdd}
+              />
+            ))}
+          </Stack>
+        </Box>
+      </ScrollArea>
+    </Paper>
   );
 }

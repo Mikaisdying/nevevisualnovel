@@ -1,21 +1,30 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
+import { Paper, Stack, Text, TextInput } from '@mantine/core';
 
 export default function PropsPanel() {
   return (
-    <div className="flex h-full flex-col gap-4 border-l p-4">
-      <h2 className="text-lg font-semibold">Properties</h2>
+    <Paper
+      radius={0}
+      className="flex h-full min-h-0 flex-col gap-4 border-l bg-white/95 p-4 backdrop-blur"
+    >
+      <Text size="lg" fw={700}>
+        Properties
+      </Text>
 
-      <div className="space-y-2">
-        <a>Name</a>
-        <Input placeholder="Node name..." />
-      </div>
+      <Stack gap="sm">
+        <Text size="sm" fw={500} c="dimmed">
+          Name
+        </Text>
+        <TextInput placeholder="Node name..." />
+      </Stack>
 
-      <div className="space-y-2">
-        <a>Value</a>
-        <Input placeholder="Some value..." />
-      </div>
-    </div>
+      <Stack gap="sm">
+        <Text size="sm" fw={500} c="dimmed">
+          Value
+        </Text>
+        <TextInput placeholder="Some value..." />
+      </Stack>
+    </Paper>
   );
 }

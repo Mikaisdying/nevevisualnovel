@@ -21,7 +21,7 @@ export default function FlowCanvas() {
   const edges: never[] = [];
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
       <ReactFlow nodes={nodes} edges={edges} fitView>
         <Background />
         <Controls />
