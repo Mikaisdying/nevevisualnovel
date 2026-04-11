@@ -1,75 +1,62 @@
 import * as dagre from 'dagre';
 import type { Node, Edge } from '@xyflow/react';
 import { Scene } from '@/types/scene';
+import { buildGraphModel, GraphNode, GraphEdge } from './buildGraphModel';
 
-const NODE_WIDTH = 300;
-const NODE_HEIGHT = 180;
+export type FlowResult = {
+  nodes: Node[];
+  edges: Edge[];
+  nodeIdMap: Map<string, string>;
+};
 
-export function flowToNodes(scenes: Scene[]) {
+export function flowToNodes(scenes: Scene[]): FlowResult {
+  const { nodes: graphNodes, edges: graphEdges, nodeIdMap } = buildGraphModel(scenes);
+
   const nodes: Node[] = [];
   const edges: Edge[] = [];
 
   const graph = new dagre.graphlib.Graph();
   graph.setDefaultEdgeLabel(() => ({}));
-  graph.setGraph({ rankdir: 'TB' });
+  graph.setGraph({ rankdir: 'LR' });
 
-  // 🔥 group by same structure (ignore text)
-  const groupMap = new Map<string, Scene[]>();
-
-  for (const scene of scenes) {
-    const key = JSON.stringify({
-      bg: scene.bg,
-      char: scene.char,
-      choices: scene.choices?.length || 0,
+  graphNodes.forEach((n: GraphNode) => {
+    nodes.push({
+      id: n.id,
+      type: 'note',
+      data: {
+        scenes: n.scenes,
+        nodeIdMap,
+      },
+      position: { x: 0, y: 0 },
     });
 
-    if (!groupMap.has(key)) groupMap.set(key, []);
-    groupMap.get(key)!.push(scene);
-  }
+    graph.setNode(n.id, { width: 300, height: 180 });
+  });
 
-  for (const [, group] of groupMap) {
-    group.forEach((scene) => {
-      graph.setNode(scene.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
-
-      nodes.push({
-        id: scene.id,
-        type: 'note',
-        data: { scene },
-        position: { x: 0, y: 0 },
-      });
-
-      if (scene.next) {
-        edges.push({
-          id: `${scene.id}-${scene.next}`,
-          source: scene.id,
-          target: scene.next,
-        });
-
-        graph.setEdge(scene.id, scene.next);
-      }
-
-      scene.choices?.forEach((c) => {
-        edges.push({
-          id: `${scene.id}-${c.next}`,
-          source: scene.id,
-          target: c.next,
-          label: c.text,
-        });
-
-        graph.setEdge(scene.id, c.next);
-      });
+  graphEdges.forEach((e: GraphEdge, i: number) => {
+    edges.push({
+      id: `${e.source}-${e.target}-${i}`,
+      source: e.source,
+      target: e.target,
+      label: e.label,
     });
-  }
+
+    graph.setEdge(e.source, e.target);
+  });
 
   dagre.layout(graph);
 
   nodes.forEach((node) => {
     const pos = graph.node(node.id);
     node.position = {
-      x: pos.x - NODE_WIDTH / 2,
-      y: pos.y - NODE_HEIGHT / 2,
+      x: pos.x - 150,
+      y: pos.y - 90,
     };
   });
 
-  return { nodes, edges };
+  return {
+    nodes,
+    edges,
+    nodeIdMap,
+  };
 }
