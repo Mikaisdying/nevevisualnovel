@@ -11,10 +11,12 @@ const menuItems: MenuProps['items'] = [
     key: 'story',
     icon: <AlignLeft className="h-1 w-1 shrink-0" />,
     label: 'Story',
-    children: Array.from({ length: 5 }, (_, index) => ({
-      key: `story-${index + 1}`,
-      label: `Chapter ${index + 1}`,
-    })),
+    children: [
+      {
+        key: 'story',
+        label: 'Storyline',
+      },
+    ],
   },
   {
     key: 'assets',

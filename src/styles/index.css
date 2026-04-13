@@ -145,3 +145,25 @@ body,
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
+.rf-btn {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #ffffff;
+}
+
+.rf-btn.primary {
+  border-color: #bfdbfe;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.rf-btn.danger {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}

@@ -23,6 +23,7 @@ export function flowToNodes(scenes: Scene[]): FlowResult {
     nodes.push({
       id: n.id,
       type: 'note',
+      dragHandle: '.drag-handle',
       data: {
         scenes: n.scenes,
         nodeIdMap,

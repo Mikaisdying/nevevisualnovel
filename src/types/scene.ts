@@ -9,7 +9,7 @@ export type CharacterState = {
 
 export type Textbox = {
   name?: string;
-  text: string[];
+  text: string;
 };
 
 export type Choice = {

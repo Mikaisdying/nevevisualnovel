@@ -12,9 +12,9 @@ function EditorContent() {
         <FlowCanvas />
       </div>
 
-      {/* <div className="absolute top-0 right-0 h-full min-h-0 w-80 shrink-0 overflow-y-auto border-l bg-white/95 backdrop-blur">
+      <div className="absolute top-0 right-0 h-full min-h-0 w-80 shrink-0 overflow-y-auto border-l bg-white/95 backdrop-blur">
         <PropsPanel />
-      </div> */}
+      </div>
     </div>
   );
 }
