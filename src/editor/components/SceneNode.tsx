@@ -59,7 +59,7 @@ const SceneItem = React.memo(function SceneItem({
         width: '100%',
       }}
     >
-      <Space direction="vertical" size={2}>
+      <Space orientation="vertical" size={2}>
         {scene.textbox.name && <Text type="secondary">{scene.textbox.name}</Text>}
         <Text>{scene.textbox.text}</Text>
       </Space>
@@ -190,7 +190,7 @@ export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: S
         </Space>
 
         <div style={{ marginTop: 12 }}>
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space orientation="vertical" style={{ width: '100%' }}>
             {scenes[scenes.length - 1].choices?.map((c) => (
               <Card
                 size="small"

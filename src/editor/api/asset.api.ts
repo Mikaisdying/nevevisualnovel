@@ -12,7 +12,6 @@ export interface Asset {
 
 export const getAssets = async (type?: string): Promise<Asset[]> => {
   try {
-    // Implementation for getting assets
     console.log('Getting assets for type:', type);
     return [];
   } catch (error) {

@@ -9,8 +9,15 @@
 	"characters": [
 		{
 			"id": "sample",
-			"folder": "sample",
-			"name": "Sample"
+			"name": "Sample",
+			"poses": [
+				{
+					"id": "default"
+				},
+				{
+					"id": "happy"
+				}
+			]
 		}
 	]
 }

@@ -186,19 +186,21 @@ export default function FlowCanvas({ onSceneSelect }: FlowCanvasProps) {
         proOptions={{ hideAttribution: true }}
         nodesDraggable={true}
       >
-        <defs>
-          <marker
-            id="arrowVN"
-            markerWidth="13"
-            markerHeight="13"
-            refX="9"
-            refY="3"
-            orient="auto"
-            markerUnits="strokeWidth"
-          >
-            <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
-          </marker>
-        </defs>
+        <svg style={{ display: 'none' }}>
+          <defs>
+            <marker
+              id="arrowVN"
+              markerWidth="13"
+              markerHeight="13"
+              refX="9"
+              refY="3"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+            </marker>
+          </defs>
+        </svg>
         <Background variant={BackgroundVariant.Dots} gap={24} />
         <Controls />
         <MiniMap position="bottom-right" pannable zoomable nodeStrokeWidth={3} />

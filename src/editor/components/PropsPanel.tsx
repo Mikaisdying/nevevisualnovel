@@ -3,7 +3,7 @@ import { CloseOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import type { Scene, CharacterPosition } from '@/types/scene';
 import { loadManifest } from '../api/manifest.api';
-import { loadStoryline } from '../api/story.api';
+import { loadStoryline, saveStoryline } from '../api/story.api';
 
 const { TextArea } = Input;
 
@@ -130,6 +130,42 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
   };
   const removeChoice = (id: string) => setChoices((p) => p.filter((c) => c.id !== id));
 
+  // Lưu scene vào backend
+  const handleSave = async () => {
+    if (!scene) return;
+    // Lấy toàn bộ storyline hiện tại
+    const storyline = await loadStoryline();
+    if (!Array.isArray(storyline)) return;
+
+    // Tạo scene mới từ state
+    const newScene = {
+      ...scene,
+      bg,
+      textbox: { name: speaker, text },
+      char: characters.map((c) => ({
+        name: c.name ?? '',
+        pose: c.pose ?? 'normal',
+        position: c.position ?? 'center',
+        focus: c.focus,
+      })),
+      choices: choices.map((c) => ({
+        text: c.text ?? '',
+        next: c.next ?? '',
+      })),
+    };
+
+    // Ghi đè scene theo id
+    const idx = storyline.findIndex((s) => s.id === scene.id);
+    let newStoryline;
+    if (idx !== -1) {
+      newStoryline = [...storyline];
+      newStoryline[idx] = newScene;
+    } else {
+      newStoryline = [...storyline, newScene];
+    }
+    await saveStoryline(newStoryline);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fff' }}>
       {/* ── Header ── */}
@@ -197,7 +233,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
             style={{ marginBottom: 20 }}
             labelCol={{ style: { paddingBottom: 2 } }}
           >
-            <Space direction="vertical" style={{ width: '100%' }} size={8}>
+            <Space orientation="vertical" style={{ width: '100%' }} size={8}>
               {characters.map((char) => (
                 <div
                   key={char.id}
@@ -302,7 +338,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
 
           {/* Choices */}
           <Form.Item label={sectionLabel('Lựa chọn')} style={{ marginBottom: 20 }}>
-            <Space direction="vertical" style={{ width: '100%' }} size={8}>
+            <Space orientation="vertical" style={{ width: '100%' }} size={8}>
               {choices.map((choice, i) => (
                 <div
                   key={choice.id}
@@ -442,7 +478,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
           <Button icon={<ReloadOutlined />} style={{ flexShrink: 0 }} />
         </Tooltip>
 
-        <Button type="primary" style={{ flex: 1 }}>
+        <Button type="primary" style={{ flex: 1 }} onClick={handleSave}>
           Lưu
         </Button>
       </div>

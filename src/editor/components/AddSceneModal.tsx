@@ -45,7 +45,7 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
       okText="Thêm"
       cancelText="Hủy"
     >
-      <Space direction="vertical" style={{ width: '100%' }} size={12}>
+      <Space orientation="vertical" style={{ width: '100%' }} size={12}>
         {/* NAME */}
         <Input
           placeholder="Tên"
@@ -64,7 +64,7 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
         <div>
           <div style={{ fontWeight: 500 }}>Nhân vật</div>
 
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space orientation="vertical" style={{ width: '100%' }}>
             {form.characters.map((char, i) => (
               <Space key={i} style={{ width: '100%' }}>
                 {/* select character */}
@@ -147,7 +147,7 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
         <div>
           <div style={{ fontWeight: 500 }}>Lựa chọn</div>
 
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space orientation="vertical" style={{ width: '100%' }}>
             {form.choices.map((choice, i) => (
               <Space key={i} style={{ width: '100%' }}>
                 <Input

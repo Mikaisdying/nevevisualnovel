@@ -1,15 +1,13 @@
 export const loadManifest = async () => {
-  const res = await fetch('/data/manifest.json');
+  const res = await fetch('/api/manifest');
   return res.json();
 };
 
-export const downloadManifest = (data: any) => {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: 'application/json',
+export const saveManifest = async (data: any) => {
+  const res = await fetch('/api/manifest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
   });
-
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'manifest.json';
-  a.click();
+  return res.json();
 };

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AlignLeft, FolderOpen } from 'lucide-react';
 import type { MenuProps } from 'antd';
 import { Button, Menu, Typography } from 'antd';
+import AssetModal from './AssetModal';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const menuItems: MenuProps['items'] = [
@@ -35,6 +36,7 @@ function getActiveGroupKey(selectedKey: string | undefined) {
 export default function SidebarPanel({ collapsed, onToggleCollapsed }: SidebarPanelProps) {
   const [selectedKeys, setSelectedKeys] = useState<string[]>(['assets']);
   const [openKeys, setOpenKeys] = useState<string[]>(['assets']);
+  const [assetModalOpen, setAssetModalOpen] = useState(false);
 
   const activeGroupKey = getActiveGroupKey(selectedKeys[0]);
 
@@ -75,11 +77,17 @@ export default function SidebarPanel({ collapsed, onToggleCollapsed }: SidebarPa
         openKeys={collapsed ? undefined : openKeys}
         onOpenChange={(keys) => setOpenKeys(keys as string[])}
         selectedKeys={selectedKeys}
-        onClick={({ key }) => setSelectedKeys([key])}
+        onClick={({ key }) => {
+          setSelectedKeys([key]);
+          if (key === 'assets' || key.startsWith('assets-')) {
+            setAssetModalOpen(true);
+          }
+        }}
         triggerSubMenuAction="hover"
         className="flex-1 border-r-0 bg-transparent"
         style={{ background: 'transparent' }}
       />
+      <AssetModal open={assetModalOpen} onCancel={() => setAssetModalOpen(false)} />
     </div>
   );
 }
