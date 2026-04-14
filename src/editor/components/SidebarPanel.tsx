@@ -8,17 +8,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const menuItems: MenuProps['items'] = [
   {
-    key: 'story',
-    icon: <AlignLeft className="h-1 w-1 shrink-0" />,
-    label: 'Story',
-    children: [
-      {
-        key: 'story',
-        label: 'Storyline',
-      },
-    ],
-  },
-  {
     key: 'assets',
     icon: <FolderOpen className="h-1 w-1 shrink-0" />,
     label: 'Assets',
@@ -36,10 +25,6 @@ type SidebarPanelProps = {
 };
 
 function getActiveGroupKey(selectedKey: string | undefined) {
-  if (selectedKey?.startsWith('story-')) {
-    return 'story';
-  }
-
   if (selectedKey?.startsWith('assets-')) {
     return 'assets';
   }
@@ -48,8 +33,8 @@ function getActiveGroupKey(selectedKey: string | undefined) {
 }
 
 export default function SidebarPanel({ collapsed, onToggleCollapsed }: SidebarPanelProps) {
-  const [selectedKeys, setSelectedKeys] = useState<string[]>(['story-1']);
-  const [openKeys, setOpenKeys] = useState<string[]>(['story']);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(['assets']);
+  const [openKeys, setOpenKeys] = useState<string[]>(['assets']);
 
   const activeGroupKey = getActiveGroupKey(selectedKeys[0]);
 

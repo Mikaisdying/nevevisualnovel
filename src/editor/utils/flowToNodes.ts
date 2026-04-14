@@ -31,7 +31,7 @@ export function flowToNodes(scenes: Scene[]): FlowResult {
       position: { x: 0, y: 0 },
     });
 
-    graph.setNode(n.id, { width: 300, height: 180 });
+    graph.setNode(n.id, { width: 450, height: 180 });
   });
 
   graphEdges.forEach((e: GraphEdge, i: number) => {

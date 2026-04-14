@@ -1,23 +1,5 @@
-export const loadStoryList = async () => {
-  const res = await fetch('/data/story/index.json');
-  const data = await res.json();
-
-  // Support both old/new schema keys from story index.
-  const scenes = Array.isArray(data?.stories)
-    ? data.stories
-    : Array.isArray(data?.scenes)
-      ? data.scenes
-      : [];
-
-  return {
-    ...data,
-    scenes,
-  };
-};
-
-export const loadStory = async (name: string) => {
-  const normalized = name.endsWith('.json') ? name : `${name}.json`;
-  const res = await fetch(`/data/story/scenes/${normalized}`);
+export const loadStoryline = async () => {
+  const res = await fetch('/data/storyline.json');
   return res.json();
 };
 

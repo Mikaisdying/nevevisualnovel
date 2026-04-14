@@ -6,18 +6,36 @@ import {
   Controls,
   useNodesState,
   useEdgesState,
+  MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { MiniMap } from '@xyflow/react';
 
 import { flowToNodes } from '../utils/flowToNodes';
-import { mockScenes } from '../mockScenes';
+import { loadStoryline } from '../api/story.api';
 import type { Scene } from '@/types/scene';
-import { SceneNoteNode } from './SceneNoteNode';
+import { SceneNoteNode } from './SceneNode';
 
-export default function FlowCanvas() {
-  const [scenes, setScenes] = React.useState<Scene[]>(mockScenes);
+export interface FlowCanvasProps {
+  onSceneSelect: (scene: Scene | null) => void;
+}
+
+export default function FlowCanvas({ onSceneSelect }: FlowCanvasProps) {
+  const [scenes, setScenes] = React.useState<Scene[]>([]);
+  const [selectedNodeId, setSelectedNodeId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await loadStoryline();
+        setScenes(data);
+      } catch (error) {
+        console.error('Failed to load storyline:', error);
+      }
+    };
+    loadData();
+  }, []);
 
   const { nodes: initialNodes, edges: initialEdges } = React.useMemo(
     () => flowToNodes(scenes),
@@ -29,9 +47,30 @@ export default function FlowCanvas() {
 
   React.useEffect(() => {
     const { nodes, edges } = flowToNodes(scenes);
-    setNodes(nodes);
+    const styledNodes = nodes.map((node) => ({
+      ...node,
+      style: {
+        ...node.style,
+        boxShadow: 'none',
+      },
+    }));
+    setNodes(styledNodes);
     setEdges(edges);
   }, [scenes, setNodes, setEdges]);
+
+  React.useEffect(() => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => ({
+        ...node,
+        selected: node.id === selectedNodeId,
+        style: {
+          ...node.style,
+          border: node.id === selectedNodeId ? '3px solid #5e86c5' : 'none',
+          borderRadius: 12,
+        },
+      })),
+    );
+  }, [selectedNodeId, setNodes]);
 
   const handleInsertScene = React.useCallback(
     (groupScenes: Scene[], index: number, newScene: Scene) => {
@@ -90,31 +129,77 @@ export default function FlowCanvas() {
         <SceneNoteNode
           {...props}
           onInsertScene={(index, newScene) => handleInsertScene(props.data.scenes, index, newScene)}
+          onSceneClick={(scene: Scene) => {
+            setSelectedNodeId(props.id);
+            onSceneSelect(scene);
+          }}
         />
       ),
       groupNode: (props: any) => (
         <SceneNoteNode
           {...props}
           onInsertScene={(index, newScene) => handleInsertScene(props.data.scenes, index, newScene)}
+          onSceneClick={(scene: Scene) => {
+            setSelectedNodeId(props.id);
+            onSceneSelect(scene);
+          }}
         />
       ),
     }),
-    [handleInsertScene],
+    [handleInsertScene, onSceneSelect],
   );
+
+  const handleSelectionChange = React.useCallback((params: any) => {
+    const selectedNodes = params.nodes;
+    if (selectedNodes.length > 0) {
+      setSelectedNodeId(selectedNodes[0].id);
+    } else {
+      setSelectedNodeId(null);
+    }
+  }, []);
 
   return (
     <div className="h-full w-full bg-[radial-gradient(circle_at_top,#f8fafc_0%,#eef2ff_45%,#e2e8f0_100%)]">
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={edges.map((edge) => ({
+          ...edge,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: '#64748b',
+          },
+          style: {
+            ...(edge.style || {}),
+            stroke: '#64748b',
+            strokeWidth: 2,
+          },
+        }))}
         nodeTypes={nodeTypes}
         fitView
         onNodesChange={onNodesChange}
+        onSelectionChange={handleSelectionChange}
+        onPaneClick={() => {
+          setSelectedNodeId(null);
+          onSceneSelect(null);
+        }}
         fitViewOptions={{ padding: 0.2 }}
         proOptions={{ hideAttribution: true }}
         nodesDraggable={true}
       >
-        <Background variant={BackgroundVariant.Lines} color="#e2e8f0" gap={24} />
+        <defs>
+          <marker
+            id="arrowVN"
+            markerWidth="13"
+            markerHeight="13"
+            refX="9"
+            refY="3"
+            orient="auto"
+            markerUnits="strokeWidth"
+          >
+            <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+          </marker>
+        </defs>
+        <Background variant={BackgroundVariant.Dots} gap={24} />
         <Controls />
         <MiniMap position="bottom-right" pannable zoomable nodeStrokeWidth={3} />
       </ReactFlow>

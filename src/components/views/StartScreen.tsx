@@ -5,7 +5,7 @@ export default function StartScreen() {
   const startGame = useGameStore((s) => s.startGame);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen flex flex-col items-center justify-center gap-6 text-white bg-transparent">
+    <div className="fullscreen-absolute layer-ui flex flex-col items-center justify-center gap-6 bg-transparent text-white">
       <h1 className="text-4xl font-bold">My Visual Novel</h1>
 
       <Button onClick={startGame} variant="outline" className="w-32">

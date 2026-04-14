@@ -11,7 +11,7 @@ export function TextBox({ children, className, style, name, content, ...props }:
   return (
     <div
       style={{
-        position: 'fixed',
+        position: 'absolute',
         left: '50%',
         bottom: '24px',
         transform: 'translateX(-50%)',
@@ -23,11 +23,10 @@ export function TextBox({ children, className, style, name, content, ...props }:
         boxShadow: '0 4px 32px 0 rgba(0,0,0,0.4)',
         display: 'flex',
         alignItems: 'flex-start',
-        zIndex: 30,
         ...style,
       }}
       className={cn(
-        'pointer-events-auto relative cursor-pointer bg-black/80 text-white select-none',
+        'layer-foreground pointer-events-auto relative cursor-pointer bg-black/80 text-white select-none',
         className,
       )}
       {...props}

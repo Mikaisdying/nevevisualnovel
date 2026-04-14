@@ -1,4 +1,5 @@
 import React from 'react';
+import { loadManifest } from '../api/manifest.api';
 import { Modal, Space, Input, Button, Select, Switch } from 'antd';
 
 export type SceneFormState = {
@@ -18,21 +19,23 @@ type SceneNodeModalProps = {
   open: boolean;
   form: SceneFormState;
   setForm: React.Dispatch<React.SetStateAction<SceneFormState>>;
-  characterList: CharacterOption[];
-  bgList: string[];
   onSubmit: () => void;
   onCancel: () => void;
 };
 
-export function AddSceneModal({
-  open,
-  form,
-  setForm,
-  characterList,
-  bgList,
-  onSubmit,
-  onCancel,
-}: SceneNodeModalProps) {
+export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: SceneNodeModalProps) {
+  const [characterList, setCharacterList] = React.useState<CharacterOption[]>([]);
+  const [bgList, setBgList] = React.useState<string[]>([]);
+  React.useEffect(() => {
+    loadManifest().then((data) => {
+      if (Array.isArray(data.characters)) {
+        setCharacterList(data.characters.map((c: any) => ({ id: c.id, name: c.name ?? c.id })));
+      }
+      if (Array.isArray(data.backgrounds)) {
+        setBgList(data.backgrounds.map((b: any) => b.id));
+      }
+    });
+  }, []);
   return (
     <Modal
       title="Thêm đoạn hội thoại"
@@ -66,7 +69,7 @@ export function AddSceneModal({
               <Space key={i} style={{ width: '100%' }}>
                 {/* select character */}
                 <Select
-                  style={{ flex: 1 }}
+                  style={{ minWidth: 180, maxWidth: 260 }}
                   placeholder="Chọn nhân vật"
                   value={char.id}
                   onChange={(val) =>

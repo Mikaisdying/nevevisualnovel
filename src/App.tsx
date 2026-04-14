@@ -19,15 +19,15 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="fixed flex h-screen w-screen items-center justify-center bg-black text-white">
+      <div className="fullscreen-fixed layer-modal flex items-center justify-center bg-black text-white">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="fixed h-screen w-screen bg-black">
-      <div className="">
+    <div className="game-view-wrapper flex items-center justify-center">
+      <div className="fullscreen-absolute bg-black">
         <BackgroundLayer bg={started ? scene?.bg : startScene?.bg} />
         {started ? <Game /> : <StartScreen />}
       </div>

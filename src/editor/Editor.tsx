@@ -1,29 +1,39 @@
 import { useState } from 'react';
 import { Layout } from 'antd';
+import type { Scene } from '@/types/scene';
 
 import SidebarPanel from './components/SidebarPanel';
 import FlowCanvas from './components/FlowCanvas';
 import PropsPanel from './components/PropsPanel';
 
-function EditorContent() {
+function EditorContent({
+  selectedScene,
+  onSceneSelect,
+}: {
+  selectedScene: Scene | null;
+  onSceneSelect: (scene: Scene | null) => void;
+}) {
   return (
-    <div className="relative h-full min-h-0 min-w-0 overflow-hidden">
-      <div className="relative h-full min-h-0 min-w-0 flex-1 overflow-hidden">
-        <FlowCanvas />
+    <div className="relative flex h-full min-h-0 min-w-0 overflow-hidden">
+      <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
+        <FlowCanvas onSceneSelect={onSceneSelect} />
       </div>
 
-      <div className="absolute top-0 right-0 h-full min-h-0 w-80 shrink-0 overflow-y-auto border-l bg-white/95 backdrop-blur">
-        <PropsPanel />
-      </div>
+      {selectedScene && (
+        <div className="flex h-full min-h-0 w-[320px] max-w-[30vw] shrink-0 flex-col border-l bg-white/95 py-3 pr-3 pl-4 backdrop-blur">
+          <PropsPanel scene={selectedScene} />
+        </div>
+      )}
     </div>
   );
 }
 
 export default function Editor() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
 
   return (
-    <Layout className="h-screen overflow-hidden bg-slate-50">
+    <Layout className="h-full overflow-hidden bg-slate-50">
       <Layout.Sider
         width={240}
         collapsedWidth={50}
@@ -39,7 +49,7 @@ export default function Editor() {
       </Layout.Sider>
 
       <Layout.Content className="h-screen min-h-0 min-w-0 overflow-hidden p-0">
-        <EditorContent />
+        <EditorContent selectedScene={selectedScene} onSceneSelect={setSelectedScene} />
       </Layout.Content>
     </Layout>
   );

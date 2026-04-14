@@ -14,16 +14,15 @@ const ChoiceList: React.FC<ChoiceListProps> = ({ choices, onSelect }) => {
   return (
     <div
       style={{
-        position: 'fixed',
+        position: 'absolute',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
         width: '90%',
         maxWidth: '48rem',
-        zIndex: 30,
         pointerEvents: 'auto',
       }}
-      className="flex flex-col gap-4"
+      className="layer-foreground flex flex-col gap-4"
     >
       {choices.map((choice, idx) => (
         <button

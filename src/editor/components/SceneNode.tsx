@@ -2,6 +2,7 @@ import React from 'react';
 import { Handle, Position, useReactFlow, NodeToolbar, type NodeProps } from '@xyflow/react';
 import type { Scene } from '@/types/scene';
 import { Card, Space, Tag, Typography } from 'antd';
+import { loadManifest } from '../api/manifest.api';
 import { AddSceneModal, type SceneFormState } from './AddSceneModal';
 
 const { Text } = Typography;
@@ -14,6 +15,7 @@ export type SceneNodeData = {
 export type SceneNoteNodeProps = NodeProps & {
   data: SceneNodeData;
   onInsertScene: (index: number, scene: Scene) => void;
+  onSceneClick?: (scene: Scene) => void;
 };
 
 function InsertDivider({ onClick }: { onClick: () => void }) {
@@ -35,28 +37,39 @@ function InsertDivider({ onClick }: { onClick: () => void }) {
   );
 }
 
-const SceneItem = React.memo(function SceneItem({ scene }: { scene: Scene }) {
+const SceneItem = React.memo(function SceneItem({
+  scene,
+  onClick,
+}: {
+  scene: Scene;
+  onClick?: () => void;
+}) {
   if (!scene.textbox) return null;
 
   return (
-    <Space direction="vertical" size={2}>
-      {scene.textbox.name && <Text type="secondary">{scene.textbox.name}</Text>}
-      <Text>{scene.textbox.text}</Text>
-    </Space>
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.();
+      }}
+      style={{
+        all: 'unset',
+        cursor: 'pointer',
+        width: '100%',
+      }}
+    >
+      <Space direction="vertical" size={2}>
+        {scene.textbox.name && <Text type="secondary">{scene.textbox.name}</Text>}
+        <Text>{scene.textbox.text}</Text>
+      </Space>
+    </button>
   );
 });
 
-export function SceneNoteNode({ data, selected, onInsertScene }: SceneNoteNodeProps) {
+export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: SceneNoteNodeProps) {
   const { scenes, nodeIdMap } = data;
   const first = scenes[0];
-
-  const characterList = [
-    { id: 'a', name: 'Alice' },
-    { id: 'b', name: 'Bob' },
-    { id: 'c', name: 'Celine' },
-  ];
-
-  const bgList = ['room', 'street', 'school'];
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
@@ -115,8 +128,6 @@ export function SceneNoteNode({ data, selected, onInsertScene }: SceneNoteNodePr
           className="rf-btn danger"
           onClick={(e) => {
             e.stopPropagation();
-            // mock delete action
-            console.log('mock delete node');
           }}
         >
           delete
@@ -158,14 +169,20 @@ export function SceneNoteNode({ data, selected, onInsertScene }: SceneNoteNodePr
         extra={first.bg && <Tag>{first.bg}</Tag>}
       >
         <Space
-          direction="vertical"
+          orientation="vertical"
           size={8}
-          style={{ maxHeight: 200, overflowY: 'auto', width: '100%', cursor: 'default' }}
+          style={{
+            maxHeight: 450,
+            overflowY: 'auto',
+            width: '100%',
+            cursor: 'default',
+            paddingBottom: 14,
+          }}
         >
           {scenes.map((scene, i) => {
             return (
               <React.Fragment key={scene.id}>
-                <SceneItem scene={scene} />
+                <SceneItem scene={scene} onClick={() => onSceneClick?.(scene)} />
                 <InsertDivider onClick={() => openModal(i)} />
               </React.Fragment>
             );
@@ -218,8 +235,6 @@ export function SceneNoteNode({ data, selected, onInsertScene }: SceneNoteNodePr
         open={isModalOpen}
         form={form}
         setForm={setForm}
-        characterList={characterList}
-        bgList={bgList}
         onCancel={() => setIsModalOpen(false)}
         onSubmit={() => {
           if (modalIndex === null) return;
