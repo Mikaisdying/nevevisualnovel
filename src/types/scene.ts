@@ -13,7 +13,7 @@ export type Textbox = {
 };
 
 export type Choice = {
-  text: string;
+  text: string | null;
   next: string;
   condition?: string;
 };
@@ -23,8 +23,6 @@ export type Scene = {
   bg?: string;
   char?: CharacterState[];
   textbox?: Textbox;
-
-  next?: string;
   choices?: Choice[];
 };
 

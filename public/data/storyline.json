@@ -2,100 +2,973 @@
   {
     "id": "intro_1",
     "bg": "image",
-    "char": [{ "name": "sample", "pose": "normal", "focus": false }],
-    "textbox": { "name": "Ame", "text": "Hello..." },
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "focus": false
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Hello..."
+    },
     "next": "intro_2"
   },
   {
     "id": "intro_2",
     "bg": "image",
-    "char": [{ "name": "sample", "pose": "normal", "focus": false }],
-    "textbox": { "name": "Ame", "text": "You finally woke up." },
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "focus": false
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You finally woke up."
+    },
     "choices": [
-      { "text": "Who are you?", "next": "intro_3" },
-      { "text": "Where am I?", "next": "intro_4" }
+      {
+        "text": "Who are you?",
+        "next": "intro_3"
+      },
+      {
+        "text": "Where am I?",
+        "next": "intro_4"
+      }
     ]
   },
-
-  { "id": "intro_3", "bg": "image", "char": [{ "name": "sample", "pose": "normal", "focus": false }], "textbox": { "name": "Ame", "text": "I'm Ame." }, "next": "intro_5" },
-  { "id": "intro_4", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Somewhere safe... for now." }, "next": "intro_5" },
-
-  { "id": "intro_5", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "You don't remember anything, right?" }, "choices": [
-    { "text": "No...", "next": "intro_6" },
-    { "text": "Maybe a little.", "next": "intro_7" }
-  ]},
-
-  { "id": "intro_6", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "I figured." }, "next": "intro_8" },
-  { "id": "intro_7", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Then hold onto it." }, "next": "intro_8" },
-
-  { "id": "intro_8", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Things are... complicated." }, "next": "intro_9" },
-  { "id": "intro_9", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "And dangerous." }, "next": "intro_10" },
-
-  { "id": "intro_10", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "You shouldn't be here." }, "next": "intro_11" },
-  { "id": "intro_11", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "But now you are." }, "next": "intro_12" },
-
-  { "id": "intro_12", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "So listen carefully." }, "next": "intro_13" },
-  { "id": "intro_13", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Do you trust me?" }, "choices": [
-    { "text": "Yes.", "next": "intro_14" },
-    { "text": "No.", "next": "intro_15" }
-  ]},
-
-  { "id": "intro_14", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Good." }, "next": "intro_16" },
-  { "id": "intro_15", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "You should." }, "next": "intro_16" },
-
-  { "id": "intro_16", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "We don't have much time." }, "next": "intro_17" },
-  { "id": "intro_17", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "They're coming." }, "next": "intro_18" },
-
-  { "id": "intro_18", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "You need to choose." }, "choices": [
-    { "text": "Stay", "next": "intro_19" },
-    { "text": "Run", "next": "intro_20" }
-  ]},
-
-  { "id": "intro_19", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Brave." }, "next": "intro_21" },
-  { "id": "intro_20", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Smart." }, "next": "intro_21" },
-
-  { "id": "intro_21", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Either way..." }, "next": "intro_22" },
-  { "id": "intro_22", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "You're involved now." }, "next": "intro_23" },
-
-  { "id": "intro_23", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "There's no turning back." }, "next": "intro_24" },
-  { "id": "intro_24", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Not anymore." }, "next": "intro_25" },
-
-  { "id": "intro_25", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Can you stand?" }, "next": "intro_26" },
-  { "id": "intro_26", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Good." }, "next": "intro_27" },
-
-  { "id": "intro_27", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Follow me." }, "next": "intro_28" },
-  { "id": "intro_28", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Stay close." }, "next": "intro_29" },
-
-  { "id": "intro_29", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Don't make a sound." }, "next": "intro_30" },
-  { "id": "intro_30", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "..." }, "next": "intro_31" },
-
-  { "id": "intro_31", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Did you hear that?" }, "next": "intro_32" },
-  { "id": "intro_32", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "We need to hurry." }, "next": "intro_33" },
-
-  { "id": "intro_33", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Almost there." }, "next": "intro_34" },
-  { "id": "intro_34", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Just a little more." }, "next": "intro_35" },
-
-  { "id": "intro_35", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Here." }, "next": "intro_36" },
-  { "id": "intro_36", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "We can rest for a moment." }, "next": "intro_37" },
-
-  { "id": "intro_37", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "You did well." }, "next": "intro_38" },
-  { "id": "intro_38", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Even without memories." }, "next": "intro_39" },
-
-  { "id": "intro_39", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Maybe that's better." }, "next": "intro_40" },
-  { "id": "intro_40", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Less pain." }, "next": "intro_41" },
-
-  { "id": "intro_41", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Anyway..." }, "next": "intro_42" },
-  { "id": "intro_42", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Welcome back." }, "next": "intro_43" },
-
-  { "id": "intro_43", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "To this world." }, "next": "intro_44" },
-  { "id": "intro_44", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Let's survive it together." }, "next": "intro_45" },
-
-  { "id": "intro_45", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Alright?" }, "next": "intro_46" },
-  { "id": "intro_46", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Good." }, "next": "intro_47" },
-
-  { "id": "intro_47", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Now let's move." }, "next": "intro_48" },
-  { "id": "intro_48", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Stay behind me." }, "next": "intro_49" },
-
-  { "id": "intro_49", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Whatever happens..." }, "next": "intro_50" },
-  { "id": "intro_50", "bg": "image", "char": [{ "name": "sample", "pose": "normal"}], "textbox": { "name": "Ame", "text": "Don't let go." } }
+  {
+    "id": "intro_3",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "focus": false
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "I'm Ame."
+    },
+    "next": "intro_5"
+  },
+  {
+    "id": "intro_4",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Somewhere safe... for now."
+    },
+    "next": "intro_5"
+  },
+  {
+    "id": "intro_5",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "position": "center"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You don't remember anything, right?"
+    },
+    "choices": [
+      {
+        "text": "No...",
+        "next": "intro_6"
+      },
+      {
+        "text": "Maybe a little.",
+        "next": "intro_7"
+      }
+    ]
+  },
+  {
+    "id": "intro_6",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "position": "center"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "I figured"
+    },
+    "next": "intro_8",
+    "choices": []
+  },
+  {
+    "id": "intro_7",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Then hold onto it."
+    },
+    "next": "intro_8"
+  },
+  {
+    "id": "intro_8",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "position": "center"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Things are... complicated"
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_9"
+      }
+    ]
+  },
+  {
+    "id": "intro_9",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "And dangerous."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_10"
+      }
+    ]
+  },
+  {
+    "id": "intro_10",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You shouldn't be here."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_11"
+      }
+    ]
+  },
+  {
+    "id": "intro_11",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "But now you are."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_12"
+      }
+    ]
+  },
+  {
+    "id": "intro_12",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "So listen carefully."
+    },
+    "next": "intro_13"
+  },
+  {
+    "id": "intro_13",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Do you trust me?"
+    },
+    "choices": [
+      {
+        "text": "Yes.",
+        "next": "intro_14"
+      },
+      {
+        "text": "No.",
+        "next": "intro_15"
+      }
+    ]
+  },
+  {
+    "id": "intro_14",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Good."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_16"
+      }
+    ]
+  },
+  {
+    "id": "intro_15",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You should."
+    },
+    "next": "intro_16"
+  },
+  {
+    "id": "intro_16",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "We don't have much time."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_17"
+      }
+    ]
+  },
+  {
+    "id": "intro_17",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "They're coming."
+    },
+    "next": "intro_18"
+  },
+  {
+    "id": "intro_18",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You need to choose."
+    },
+    "choices": [
+      {
+        "text": "Stay",
+        "next": "intro_19"
+      },
+      {
+        "text": "Run",
+        "next": "intro_20"
+      }
+    ]
+  },
+  {
+    "id": "intro_19",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Brave."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_21"
+      }
+    ]
+  },
+  {
+    "id": "intro_20",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Smart."
+    },
+    "next": "intro_21"
+  },
+  {
+    "id": "intro_21",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Either way..."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_22"
+      }
+    ]
+  },
+  {
+    "id": "intro_22",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You're involved now."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_23"
+      }
+    ]
+  },
+  {
+    "id": "intro_23",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "There's no turning back."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_24"
+      }
+    ]
+  },
+  {
+    "id": "intro_24",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Not anymore."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_25"
+      }
+    ]
+  },
+  {
+    "id": "intro_25",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Can you stand?"
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_26"
+      }
+    ]
+  },
+  {
+    "id": "intro_26",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Good."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_27"
+      }
+    ]
+  },
+  {
+    "id": "intro_27",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Follow me."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_28"
+      }
+    ]
+  },
+  {
+    "id": "intro_28",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Stay close."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_29"
+      }
+    ]
+  },
+  {
+    "id": "intro_29",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Don't make a sound."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_30"
+      }
+    ]
+  },
+  {
+    "id": "intro_30",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "..."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_31"
+      }
+    ]
+  },
+  {
+    "id": "intro_31",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Did you hear that?"
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_32"
+      }
+    ]
+  },
+  {
+    "id": "intro_32",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "We need to hurry."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_33"
+      }
+    ]
+  },
+  {
+    "id": "intro_33",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Almost there."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_34"
+      }
+    ]
+  },
+  {
+    "id": "intro_34",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Just a little more."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_35"
+      }
+    ]
+  },
+  {
+    "id": "intro_35",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Here."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_36"
+      }
+    ]
+  },
+  {
+    "id": "intro_36",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "We can rest for a moment."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_37"
+      }
+    ]
+  },
+  {
+    "id": "intro_37",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "You did well."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_38"
+      }
+    ]
+  },
+  {
+    "id": "intro_38",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Even without memories."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_39"
+      }
+    ]
+  },
+  {
+    "id": "intro_39",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Maybe that's better."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_40"
+      }
+    ]
+  },
+  {
+    "id": "intro_40",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Less pain."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_41"
+      }
+    ]
+  },
+  {
+    "id": "intro_41",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Anyway..."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_42"
+      }
+    ]
+  },
+  {
+    "id": "intro_42",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Welcome back."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_43"
+      }
+    ]
+  },
+  {
+    "id": "intro_43",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "To this world."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_44"
+      }
+    ]
+  },
+  {
+    "id": "intro_44",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Let's survive it together."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_45"
+      }
+    ]
+  },
+  {
+    "id": "intro_45",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Alright?"
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_46"
+      }
+    ]
+  },
+  {
+    "id": "intro_46",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Good."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_47"
+      }
+    ]
+  },
+  {
+    "id": "intro_47",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Now let's move."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_48"
+      }
+    ]
+  },
+  {
+    "id": "intro_48",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Stay behind me."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_49"
+      }
+    ]
+  },
+  {
+    "id": "intro_49",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Whatever happens..."
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_50"
+      }
+    ]
+  },
+  {
+    "id": "intro_50",
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": "Don't let go."
+    }
+  }
 ]

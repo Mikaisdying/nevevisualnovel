@@ -38,10 +38,27 @@ export const useGameStore = create<GameState>((set, get) => ({
   next: () => {
     const { currentSceneId, sceneMap } = get();
     const scene = sceneMap[currentSceneId];
-    // Nếu có choices thì không next tự động
-    if (scene?.choices && scene.choices.length > 0) return;
-    if (scene?.next) {
-      set({ currentSceneId: scene.next });
+    if (!scene) return;
+
+    // Nếu có lựa chọn hiển thị (text khác null) thì không next tự động
+    const hasInteractiveChoices = scene.choices?.some((c) => c.text !== null) ?? false;
+    if (hasInteractiveChoices) return;
+
+    // Auto-next: 1 choice với text = null
+    const autoChoice =
+      scene.choices && scene.choices.length === 1 && scene.choices[0].text === null
+        ? scene.choices[0]
+        : undefined;
+
+    if (autoChoice) {
+      set({ currentSceneId: autoChoice.next });
+      return;
+    }
+
+    // Fallback tương thích cũ nếu dữ liệu vẫn còn field next
+    const legacyNext = (scene as any).next as string | undefined;
+    if (legacyNext) {
+      set({ currentSceneId: legacyNext });
     }
   },
 

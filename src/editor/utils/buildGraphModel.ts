@@ -11,37 +11,39 @@ export type GraphEdge = {
   label?: string;
 };
 
-type EdgeType = 'next' | 'choice';
-
 export function buildGraphModel(scenes: Scene[]) {
   const sceneMap = new Map(scenes.map((s) => [s.id, s]));
 
   const edges: {
     from: string;
     to: string;
-    type: EdgeType;
+    isAuto: boolean; // true nếu là auto-next (text null)
   }[] = [];
 
   const incoming = new Map<string, string[]>();
 
   // 🔥 build graph
   scenes.forEach((s) => {
-    if (s.next) {
+    // legacy / linear next: nếu scene không có choices thì dùng next như auto-next
+    const legacyNext = (s as any).next as string | undefined;
+    if (legacyNext && (!s.choices || s.choices.length === 0)) {
       edges.push({
         from: s.id,
-        to: s.next,
-        type: 'next',
+        to: legacyNext,
+        isAuto: true,
       });
 
-      if (!incoming.has(s.next)) incoming.set(s.next, []);
-      incoming.get(s.next)!.push(s.id);
+      if (!incoming.has(legacyNext)) incoming.set(legacyNext, []);
+      incoming.get(legacyNext)!.push(s.id);
     }
 
     s.choices?.forEach((c) => {
+      const isAuto = c.text === null;
+
       edges.push({
         from: s.id,
         to: c.next,
-        type: 'choice',
+        isAuto,
       });
 
       if (!incoming.has(c.next)) incoming.set(c.next, []);
@@ -59,8 +61,8 @@ export function buildGraphModel(scenes: Scene[]) {
     return a.bg === b.bg && JSON.stringify(a.char) === JSON.stringify(b.char);
   }
 
-  function isChoiceTarget(id: string) {
-    return edges.some((e) => e.type === 'choice' && e.to === id);
+  function hasNonAutoIncomingChoice(id: string) {
+    return edges.some((e) => !e.isAuto && e.to === id);
   }
   // =========================
   // 3. BUILD GROUPS
@@ -72,8 +74,11 @@ export function buildGraphModel(scenes: Scene[]) {
     const group: Scene[] = [current];
     visited.add(current.id);
 
-    while (current.next && !current.choices?.length) {
-      const next = sceneMap.get(current.next);
+    while (true) {
+      const autoEdge = edges.find((e) => e.from === current.id && e.isAuto);
+      if (!autoEdge) break;
+
+      const next = sceneMap.get(autoEdge.to);
       if (!next) break;
 
       const isMergePoint = (incoming.get(next.id)?.length || 0) > 1;
@@ -82,7 +87,7 @@ export function buildGraphModel(scenes: Scene[]) {
         !visited.has(next.id) &&
         isSameContext(current, next) &&
         !isMergePoint &&
-        !isChoiceTarget(next.id); // 🔥 FIX QUAN TRỌNG NHẤT
+        !hasNonAutoIncomingChoice(next.id); // không merge khi là đích của choice có label
 
       if (!valid) break;
 
@@ -112,9 +117,11 @@ export function buildGraphModel(scenes: Scene[]) {
     const source = nodeIdMap.get(s.id);
     if (!source) return;
 
-    if (s.next) {
-      const target = nodeIdMap.get(s.next);
-      if (target && source !== target) {
+    // vẽ cạnh cho legacy next khi không có choices
+    const legacyNext = (s as any).next as string | undefined;
+    if (legacyNext && (!s.choices || s.choices.length === 0)) {
+      const target = nodeIdMap.get(legacyNext);
+      if (target && target !== source) {
         graphEdges.push({
           source,
           target,
@@ -124,13 +131,14 @@ export function buildGraphModel(scenes: Scene[]) {
 
     s.choices?.forEach((c) => {
       const target = nodeIdMap.get(c.next);
-      if (target && source !== target) {
-        graphEdges.push({
-          source,
-          target,
-          label: c.text,
-        });
-      }
+      if (!target || source === target) return;
+
+      const isAuto = c.text === null;
+      graphEdges.push({
+        source,
+        target,
+        label: isAuto ? undefined : (c.text ?? undefined),
+      });
     });
   });
 

@@ -120,7 +120,11 @@ export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: S
   return (
     <div className="drag-handle" style={{ width: 300 }}>
       <Handle type="target" position={Position.Left} />
-      <Handle type="source" position={Position.Right} />
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{ width: 10, height: 10, right: -2 }}
+      />
 
       <NodeToolbar isVisible={!!selected} position={Position.Bottom}>
         <button
@@ -202,32 +206,11 @@ export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: S
                 }}
               >
                 <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                  <span>→ {c.text}</span>
+                  <span>→ {c.text ?? 'next'}</span>
                   <Tag>{c.next}</Tag>
                 </Space>
               </Card>
             ))}
-
-            {!scenes[scenes.length - 1].choices?.length && scenes[scenes.length - 1].next && (
-              <Card
-                size="small"
-                hoverable
-                onClick={(e) => {
-                  e.stopPropagation();
-                  jumpToNode(scenes[scenes.length - 1].next!);
-                }}
-              >
-                <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                  <span>
-                    →{' '}
-                    {isNaN(Number(scenes[scenes.length - 1].next))
-                      ? 'next'
-                      : scenes[scenes.length - 1].next}
-                  </span>
-                  <Tag>{scenes[scenes.length - 1].next}</Tag>
-                </Space>
-              </Card>
-            )}
           </Space>
         </div>
       </Card>

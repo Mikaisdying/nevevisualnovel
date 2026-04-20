@@ -28,7 +28,13 @@ const sectionLabel = (text: string) => (
   </span>
 );
 
-export default function PropsPanel({ scene }: { scene: Scene | null }) {
+export default function PropsPanel({
+  scene,
+  onSceneUpdated,
+}: {
+  scene: Scene | null;
+  onSceneUpdated?: (scene: Scene) => void;
+}) {
   const [bg, setBg] = useState<string | undefined>(undefined);
   const [speaker, setSpeaker] = useState<string>('');
   const [text, setText] = useState<string>('');
@@ -109,7 +115,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
       scene.choices
         ? scene.choices.map((c) => ({
             id: crypto.randomUUID(),
-            text: c.text,
+            text: c.text ?? undefined,
             next: c.next,
           }))
         : [],
@@ -138,7 +144,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
     if (!Array.isArray(storyline)) return;
 
     // Tạo scene mới từ state
-    const newScene = {
+    const newScene: Scene = {
       ...scene,
       bg,
       textbox: { name: speaker, text },
@@ -149,7 +155,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
         focus: c.focus,
       })),
       choices: choices.map((c) => ({
-        text: c.text ?? '',
+        text: c.text === undefined || c.text === '' ? null : c.text,
         next: c.next ?? '',
       })),
     };
@@ -164,6 +170,7 @@ export default function PropsPanel({ scene }: { scene: Scene | null }) {
       newStoryline = [...storyline, newScene];
     }
     await saveStoryline(newStoryline);
+    onSceneUpdated?.(newScene);
   };
 
   return (

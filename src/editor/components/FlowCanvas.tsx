@@ -1,9 +1,14 @@
 import React from 'react';
 import {
+  BaseEdge,
+  EdgeLabelRenderer,
   ReactFlow,
   Background,
   BackgroundVariant,
   Controls,
+  EdgeToolbar,
+  getBezierPath,
+  type EdgeProps,
   useNodesState,
   useEdgesState,
   MarkerType,
@@ -17,13 +22,97 @@ import { loadStoryline } from '../api/story.api';
 import type { Scene } from '@/types/scene';
 import { SceneNoteNode } from './SceneNode';
 
-export interface FlowCanvasProps {
-  onSceneSelect: (scene: Scene | null) => void;
+type ChoiceEdgeProps = EdgeProps & {
+  onDeleteEdge: (sourceId: string, targetId: string) => void;
+};
+
+function ChoiceEdge({
+  id,
+  sourceX,
+  sourceY,
+  sourcePosition,
+  targetX,
+  targetY,
+  targetPosition,
+  markerEnd,
+  style,
+  selected,
+  label,
+  onDeleteEdge,
+  source,
+  target,
+}: ChoiceEdgeProps) {
+  const [edgePath, labelX, labelY] = getBezierPath({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+  });
+
+  return (
+    <>
+      <BaseEdge id={id} path={edgePath} markerEnd={markerEnd} style={style} />
+      <EdgeLabelRenderer>
+        {label !== null && (
+          <div
+            style={{
+              position: 'absolute',
+              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+              background: 'white',
+              padding: '2px 6px',
+              borderRadius: 4,
+              fontSize: 12,
+              border: '1px solid #e2e8f0',
+              pointerEvents: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {label}
+          </div>
+        )}
+      </EdgeLabelRenderer>
+      <EdgeToolbar edgeId={id} x={labelX} y={labelY} isVisible={selected}>
+        <button
+          type="button"
+          style={{
+            border: '1px solid #ef4444',
+            color: '#ef4444',
+            borderRadius: '50%',
+            width: 20,
+            height: 20,
+            fontSize: 12,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+            lineHeight: 1,
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteEdge(source, target);
+          }}
+          title="Xóa mối nối"
+        >
+          ✕
+        </button>
+      </EdgeToolbar>
+    </>
+  );
 }
 
-export default function FlowCanvas({ onSceneSelect }: FlowCanvasProps) {
+export interface FlowCanvasProps {
+  onSceneSelect: (scene: Scene | null) => void;
+  storyVersion: number;
+}
+
+export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasProps) {
   const [scenes, setScenes] = React.useState<Scene[]>([]);
   const [selectedNodeId, setSelectedNodeId] = React.useState<string | null>(null);
+  const [selectedEdgeId, setSelectedEdgeId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -35,7 +124,7 @@ export default function FlowCanvas({ onSceneSelect }: FlowCanvasProps) {
       }
     };
     loadData();
-  }, []);
+  }, [storyVersion]);
 
   const { nodes: initialNodes, edges: initialEdges } = React.useMemo(
     () => flowToNodes(scenes),
@@ -78,40 +167,76 @@ export default function FlowCanvas({ onSceneSelect }: FlowCanvasProps) {
         if (!groupScenes.length) return prev;
 
         const current = groupScenes[index];
-        const next = groupScenes[index + 1];
 
         const currentIndex = prev.findIndex((s) => s.id === current.id);
         if (currentIndex === -1) return prev;
 
-        const newSceneWithFlow: Scene = { ...newScene };
-
         const currentGlobal = prev[currentIndex];
-        let updatedCurrent: Scene = {
-          ...currentGlobal,
-          choices: currentGlobal.choices ? currentGlobal.choices.map((c) => ({ ...c })) : undefined,
-        };
 
-        if (updatedCurrent.next) {
-          newSceneWithFlow.next = updatedCurrent.next;
-          updatedCurrent = {
-            ...updatedCurrent,
-            next: newSceneWithFlow.id,
+        // copy choices hiện tại
+        const existingChoices = currentGlobal.choices ? [...currentGlobal.choices] : [];
+
+        // tách choice auto (text null) và choice hiển thị
+        const autoChoices = existingChoices.filter((c) => c.text === null);
+        const displayChoices = existingChoices.filter((c) => c.text !== null);
+
+        const newSceneWithFlow: Scene = { ...newScene, choices: newScene.choices ?? [] };
+
+        // Nếu hiện đang là chuỗi auto-next (1 auto choice) thì chèn newScene vào giữa:
+        // current --auto--> oldTarget  =>  current --auto--> newScene --auto--> oldTarget
+        if (autoChoices.length === 1 && displayChoices.length === 0) {
+          const oldTarget = autoChoices[0].next;
+
+          const updatedCurrent: Scene = {
+            ...currentGlobal,
+            choices: [
+              {
+                text: null,
+                next: newSceneWithFlow.id,
+              },
+            ],
           };
+
+          newSceneWithFlow.choices = [
+            {
+              text: null,
+              next: oldTarget,
+            },
+          ];
+
+          const newList = [...prev];
+          newList[currentIndex] = updatedCurrent;
+          newList.splice(currentIndex + 1, 0, newSceneWithFlow);
+          return newList;
         }
 
-        if (updatedCurrent.choices && updatedCurrent.choices.length > 0) {
-          updatedCurrent = {
-            ...updatedCurrent,
-            choices: updatedCurrent.choices.map((c) => ({
+        // Nếu đang có các choice hiển thị, coi việc chèn scene như chia nhánh:
+        // tất cả choice từ current trỏ sang newScene
+        if (displayChoices.length > 0) {
+          const updatedCurrent: Scene = {
+            ...currentGlobal,
+            choices: displayChoices.map((c) => ({
               ...c,
               next: newSceneWithFlow.id,
             })),
           };
 
-          if (next) {
-            newSceneWithFlow.next = next.id;
-          }
+          const newList = [...prev];
+          newList[currentIndex] = updatedCurrent;
+          newList.splice(currentIndex + 1, 0, newSceneWithFlow);
+          return newList;
         }
+
+        // Nếu không có choice nào, tạo một auto-next từ current sang newScene
+        const updatedCurrent: Scene = {
+          ...currentGlobal,
+          choices: [
+            {
+              text: null,
+              next: newSceneWithFlow.id,
+            },
+          ],
+        };
 
         const newList = [...prev];
         newList[currentIndex] = updatedCurrent;
@@ -158,30 +283,90 @@ export default function FlowCanvas({ onSceneSelect }: FlowCanvasProps) {
     }
   }, []);
 
+  // Xử lý click vào edge
+  const handleEdgeClick = (_: any, edge: any) => {
+    if (selectedEdgeId === edge.id) {
+      handleDeleteEdge(edge.source, edge.target);
+    } else {
+      setSelectedEdgeId(edge.id);
+    }
+  };
+
+  const handleDeleteEdge = React.useCallback((sourceId: string, targetId: string) => {
+    setScenes((prev) =>
+      prev.map((scene) => {
+        if (scene.id !== sourceId || !scene.choices) return scene;
+        return {
+          ...scene,
+          choices: scene.choices.filter((choice) => choice.next !== targetId),
+        };
+      }),
+    );
+    setSelectedEdgeId(null);
+  }, []);
+
+  // Xử lý tạo choice mới khi kéo nối giữa các node
+  const handleConnect = (params: any) => {
+    const { source, target } = params;
+    if (!source || !target || source === target) return;
+    setScenes((prev) => {
+      return prev.map((scene) => {
+        if (scene.id !== source) return scene;
+        // Tránh tạo choice trùng
+        if (scene.choices?.some((c) => c.next === target)) return scene;
+        return {
+          ...scene,
+          choices: [...(scene.choices ?? []), { text: '', next: target }],
+        };
+      });
+    });
+  };
+
+  // Derive edges with style/label before render
+  const computedEdges = React.useMemo(
+    () =>
+      edges.map((edge) => ({
+        ...edge,
+        type: 'choice',
+        selected: selectedEdgeId === edge.id,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: selectedEdgeId === edge.id ? '#ef4444' : '#94a3b8',
+        },
+        style: {
+          ...(edge.style || {}),
+          stroke: selectedEdgeId === edge.id ? '#ef4444' : '#94a3b8',
+          strokeWidth: selectedEdgeId === edge.id ? 3 : 2,
+          opacity: selectedEdgeId === edge.id ? 1 : 0.7,
+        },
+      })),
+    [edges, selectedEdgeId],
+  );
+
+  const edgeTypes = React.useMemo(
+    () => ({
+      choice: (props: EdgeProps) => <ChoiceEdge {...props} onDeleteEdge={handleDeleteEdge} />,
+    }),
+    [handleDeleteEdge],
+  );
+
   return (
     <div className="h-full w-full bg-[radial-gradient(circle_at_top,#f8fafc_0%,#eef2ff_45%,#e2e8f0_100%)]">
       <ReactFlow
         nodes={nodes}
-        edges={edges.map((edge) => ({
-          ...edge,
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: '#64748b',
-          },
-          style: {
-            ...(edge.style || {}),
-            stroke: '#64748b',
-            strokeWidth: 2,
-          },
-        }))}
+        edges={computedEdges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
         onNodesChange={onNodesChange}
         onSelectionChange={handleSelectionChange}
         onPaneClick={() => {
           setSelectedNodeId(null);
+          setSelectedEdgeId(null);
           onSceneSelect(null);
         }}
+        onEdgeClick={handleEdgeClick}
+        onConnect={handleConnect}
         fitViewOptions={{ padding: 0.2 }}
         proOptions={{ hideAttribution: true }}
         nodesDraggable={true}
