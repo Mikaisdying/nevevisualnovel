@@ -12,16 +12,16 @@ function getBgUrl(bg?: string) {
 export default function Background({ bg }: Props) {
   const bgUrl = getBgUrl(bg);
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
+    <div className="fullscreen-absolute layer-background pointer-events-none">
       {bgUrl ? (
         <img
           src={bgUrl}
           alt="background"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          style={{ zIndex: 1, objectFit: 'cover' }}
+          className="fullscreen-absolute object-cover object-center"
+          style={{ objectFit: 'cover' }}
         />
       ) : (
-        <div className="absolute inset-0 h-full w-full bg-gray-800" />
+        <div className="fullscreen-absolute bg-gray-800" />
       )}
     </div>
   );

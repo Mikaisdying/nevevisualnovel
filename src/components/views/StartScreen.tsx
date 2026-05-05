@@ -5,18 +5,26 @@ export default function StartScreen() {
   const startGame = useGameStore((s) => s.startGame);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen flex flex-col items-center justify-center gap-6 text-white bg-transparent">
-      <h1 className="text-4xl font-bold">My Visual Novel</h1>
+    <div className="fullscreen-absolute layer-ui flex w-full items-center text-white">
+      <div className="flex-1"></div>
 
-      <Button onClick={startGame} variant="outline" className="w-32">
-        Start
-      </Button>
-      <Button variant="outline" className="w-32">
-        Load
-      </Button>
-      <Button variant="outline" className="w-32">
-        Library
-      </Button>
+      <div className="flex flex-1 justify-center p-8">
+        <div className="flex flex-col items-center gap-8">
+          <h1 className="text-center text-4xl font-bold tracking-wider">My Visual Novel</h1>
+
+          <nav className="flex flex-col gap-4">
+            <Button onClick={startGame} variant="outline" className="h-12 w-40">
+              Start
+            </Button>
+            <Button variant="outline" className="h-12 w-40">
+              Load
+            </Button>
+            <Button variant="outline" className="h-12 w-40">
+              Library
+            </Button>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 }

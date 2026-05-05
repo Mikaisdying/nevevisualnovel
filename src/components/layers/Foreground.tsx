@@ -7,26 +7,37 @@ export default function Foreground() {
   const scene = useGameStore((s) => s.sceneMap[s.currentSceneId]);
   const next = useGameStore((s) => s.next);
   const jump = useGameStore((s) => s.jump);
+  const textSpeed = useGameStore((s) => s.settings.textSpeed);
   const [textDone, setTextDone] = useState(false);
   const [choiceActive, setChoiceActive] = useState(false);
   const prevSceneId = useRef<string | undefined>(undefined);
+
+  const hasInteractiveChoices = scene?.choices?.some((c) => c.text !== null) ?? false;
+  const displayChoices: Choice[] =
+    scene?.choices
+      ?.filter((c) => c.text !== null)
+      .map((c) => ({
+        text: (c.text ?? '') as string,
+        next: c.next,
+      })) ?? [];
 
   // Giả lập text chạy hết (có thể thay bằng hiệu ứng typewriter sau)
   React.useEffect(() => {
     setTextDone(false);
     setChoiceActive(false);
     if (scene?.textbox?.text) {
+      const delay = Math.max(150, Math.round(900 / textSpeed));
       const timeout = setTimeout(() => {
         setTextDone(true);
-        if (scene?.choices) setChoiceActive(true);
-      }, 600);
+        if (hasInteractiveChoices) setChoiceActive(true);
+      }, delay);
       return () => clearTimeout(timeout);
     } else {
       setTextDone(true);
-      if (scene?.choices) setChoiceActive(true);
+      if (hasInteractiveChoices) setChoiceActive(true);
     }
     prevSceneId.current = scene?.id;
-  }, [scene?.id, scene?.textbox?.text]);
+  }, [scene?.id, scene?.textbox?.text, hasInteractiveChoices, textSpeed]);
 
   const handleChoice = (choice: Choice) => {
     setChoiceActive(false); // ẩn choice ngay khi chọn
@@ -37,14 +48,14 @@ export default function Foreground() {
     <>
       <TextBox
         onClick={() => {
-          if (!scene?.choices && textDone) next();
+          if (!hasInteractiveChoices && textDone) next();
         }}
         className="pointer-events-auto cursor-pointer select-none"
         name={scene?.textbox?.name}
         content={scene?.textbox?.text}
       />
-      {scene?.choices && textDone && choiceActive && (
-        <ChoiceList choices={scene.choices} onSelect={handleChoice} />
+      {hasInteractiveChoices && textDone && choiceActive && (
+        <ChoiceList choices={displayChoices} onSelect={handleChoice} />
       )}
     </>
   );

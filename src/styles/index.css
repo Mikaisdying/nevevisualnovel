@@ -9,11 +9,82 @@
 @tailwind utilities;
 
 html,
-body,
-#root {
+body {
   height: 100%;
   margin: 0;
-  padding: 0;
+  background: #000;
+}
+
+/* wrapper full màn */
+#app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+/* đây mới là "game screen" - letterbox 16:9 centered */
+#root {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Game view wrapper - letterbox 16:9 */
+.game-view-wrapper {
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+
+  /* Crop top/bottom khi tall, letterbox top/bottom khi wide */
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+}
+
+/* Z-Index Layering System */
+@layer components {
+  /* Base: Fullscreen positioning utilities */
+  .fullscreen-absolute {
+    @apply absolute h-full w-full;
+  }
+
+  .fullscreen-fixed {
+    @apply fixed h-full w-full;
+  }
+
+  /* Layer structure (z-index hierarchy) */
+  .layer-background {
+    @apply z-0;
+  }
+
+  .layer-characters {
+    @apply z-10;
+  }
+
+  .layer-effects {
+    @apply z-20;
+  }
+
+  .layer-foreground {
+    @apply z-30;
+  }
+
+  .layer-ui {
+    @apply z-40;
+  }
+
+  .layer-modal {
+    @apply z-50;
+  }
 }
 
 @theme inline {
@@ -84,14 +155,6 @@ body,
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
@@ -119,13 +182,6 @@ body,
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -138,4 +194,47 @@ body,
   html {
     @apply font-sans;
   }
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+.rf-btn {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #ffffff;
+}
+
+.rf-btn.primary {
+  border-color: #bfdbfe;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.rf-btn.danger {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
 }

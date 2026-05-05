@@ -1,0 +1,23 @@
+{
+	"backgrounds": [
+		{
+			"id": "image",
+			"file": "image.png",
+			"name": "image"
+		}
+	],
+	"characters": [
+		{
+			"id": "sample",
+			"name": "Sample",
+			"poses": [
+				{
+					"id": "default"
+				},
+				{
+					"id": "happy"
+				}
+			]
+		}
+	]
+}

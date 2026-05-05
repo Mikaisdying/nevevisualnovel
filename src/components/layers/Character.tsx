@@ -18,16 +18,16 @@ export default function Character() {
         return (
           <div
             key={idx}
-            className={`absolute bottom-0 z-10 ${positionClass[pos]} flex flex-col justify-end`}
-            style={{ height: '100vh' }}
+            className={`layer-characters absolute bottom-0 ${positionClass[pos]} flex flex-col justify-end`}
+            style={{ height: '100%' }}
           >
             <img
               src={`/assets/char/${char.name}/${char.pose}.png`}
               alt={char.name}
               style={{
-                height: 'calc(100vh - 48px)',
+                height: '100%',
                 width: 'auto',
-                maxWidth: '100vw',
+                maxWidth: '100%',
                 filter: isFocus ? undefined : 'brightness(0.4)',
               }}
               className="object-bottom drop-shadow-lg"
