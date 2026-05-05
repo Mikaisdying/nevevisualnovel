@@ -15,6 +15,8 @@ export type SceneNodeData = {
 export type SceneNoteNodeProps = NodeProps & {
   data: SceneNodeData;
   onInsertScene: (index: number, scene: Scene) => void;
+  onDeleteNode: (scenes: Scene[]) => void;
+  createSceneId: () => string;
   onSceneClick?: (scene: Scene) => void;
 };
 
@@ -67,7 +69,14 @@ const SceneItem = React.memo(function SceneItem({
   );
 });
 
-export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: SceneNoteNodeProps) {
+export function SceneNoteNode({
+  data,
+  selected,
+  onInsertScene,
+  onDeleteNode,
+  createSceneId,
+  onSceneClick,
+}: SceneNoteNodeProps) {
   const { scenes, nodeIdMap } = data;
   const first = scenes[0];
 
@@ -106,14 +115,23 @@ export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: S
   );
 
   const openModal = (index: number) => {
-    const lastScene = scenes[scenes.length - 1];
+    const sourceScene = scenes[index] ?? scenes[scenes.length - 1];
 
     setModalIndex(index);
-    setForm((prev) => ({
-      ...prev,
-      name: lastScene?.textbox?.name || '',
+    setForm({
+      name: sourceScene?.textbox?.name || '',
       text: '',
-    }));
+      characters: sourceScene
+        ? (sourceScene.char ?? []).slice(0, 2).map((character) => ({
+            id: character.name,
+            focus: !!character.focus,
+            pose: character.pose,
+            position: character.position,
+          }))
+        : [],
+      bg: sourceScene?.bg || '',
+      choices: [],
+    });
     setIsModalOpen(true);
   };
 
@@ -132,6 +150,7 @@ export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: S
           className="rf-btn danger"
           onClick={(e) => {
             e.stopPropagation();
+            onDeleteNode(scenes);
           }}
         >
           delete
@@ -223,12 +242,20 @@ export function SceneNoteNode({ data, selected, onInsertScene, onSceneClick }: S
           if (modalIndex === null) return;
 
           const newScene: Scene = {
-            id: crypto.randomUUID(),
+            id: createSceneId(),
             textbox: {
               name: form.name,
               text: form.text,
             },
             bg: form.bg,
+            char: form.characters.length
+              ? form.characters.map((character) => ({
+                  name: character.id,
+                  pose: character.pose ?? 'normal',
+                  position: character.position ?? 'center',
+                  focus: character.focus,
+                }))
+              : undefined,
             choices: form.choices.length
               ? form.choices.map((c) => ({
                   text: c.text,

@@ -180,7 +180,7 @@ export default function PropsPanel({
         <Typography.Text
           style={{ fontSize: 13, fontWeight: 600, color: '#1e293b', letterSpacing: '0.02em' }}
         >
-          Properties
+          {scene?.id ?? 'Properties'}
         </Typography.Text>
       </div>
 

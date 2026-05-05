@@ -7,6 +7,7 @@ export default function Foreground() {
   const scene = useGameStore((s) => s.sceneMap[s.currentSceneId]);
   const next = useGameStore((s) => s.next);
   const jump = useGameStore((s) => s.jump);
+  const textSpeed = useGameStore((s) => s.settings.textSpeed);
   const [textDone, setTextDone] = useState(false);
   const [choiceActive, setChoiceActive] = useState(false);
   const prevSceneId = useRef<string | undefined>(undefined);
@@ -25,17 +26,18 @@ export default function Foreground() {
     setTextDone(false);
     setChoiceActive(false);
     if (scene?.textbox?.text) {
+      const delay = Math.max(150, Math.round(900 / textSpeed));
       const timeout = setTimeout(() => {
         setTextDone(true);
         if (hasInteractiveChoices) setChoiceActive(true);
-      }, 600);
+      }, delay);
       return () => clearTimeout(timeout);
     } else {
       setTextDone(true);
       if (hasInteractiveChoices) setChoiceActive(true);
     }
     prevSceneId.current = scene?.id;
-  }, [scene?.id, scene?.textbox?.text, hasInteractiveChoices]);
+  }, [scene?.id, scene?.textbox?.text, hasInteractiveChoices, textSpeed]);
 
   const handleChoice = (choice: Choice) => {
     setChoiceActive(false); // ẩn choice ngay khi chọn

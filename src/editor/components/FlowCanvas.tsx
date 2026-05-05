@@ -18,7 +18,7 @@ import '@xyflow/react/dist/style.css';
 import { MiniMap } from '@xyflow/react';
 
 import { flowToNodes } from '../utils/flowToNodes';
-import { loadStoryline } from '../api/story.api';
+import { loadStoryline, saveStoryline } from '../api/story.api';
 import type { Scene } from '@/types/scene';
 import { SceneNoteNode } from './SceneNode';
 
@@ -114,6 +114,16 @@ export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasPr
   const [selectedNodeId, setSelectedNodeId] = React.useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = React.useState<string | null>(null);
 
+  const createSceneId = React.useCallback(() => {
+    const maxId = scenes.reduce((max, scene) => {
+      const numericId = Number.parseInt(scene.id, 10);
+      if (Number.isNaN(numericId)) return max;
+      return Math.max(max, numericId);
+    }, 0);
+
+    return String(maxId + 1);
+  }, [scenes]);
+
   React.useEffect(() => {
     const loadData = async () => {
       try {
@@ -161,91 +171,181 @@ export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasPr
     );
   }, [selectedNodeId, setNodes]);
 
+  const getNodeScenesById = React.useCallback(
+    (nodeId: string) => {
+      const node = nodes.find((item) => item.id === nodeId);
+      return ((node?.data as { scenes?: Scene[] } | undefined)?.scenes ?? []) as Scene[];
+    },
+    [nodes],
+  );
+
   const handleInsertScene = React.useCallback(
     (groupScenes: Scene[], index: number, newScene: Scene) => {
-      setScenes((prev) => {
-        if (!groupScenes.length) return prev;
+      const stripLegacyNext = <T extends Scene>(scene: T) => {
+        const nextScene = { ...scene } as T & { next?: string };
+        delete nextScene.next;
+        return nextScene;
+      };
 
-        const current = groupScenes[index];
+      const nextScenes = [...scenes];
 
-        const currentIndex = prev.findIndex((s) => s.id === current.id);
-        if (currentIndex === -1) return prev;
+      if (!groupScenes.length) return;
 
-        const currentGlobal = prev[currentIndex];
+      const current = groupScenes[index];
+      const currentIndex = nextScenes.findIndex((s) => s.id === current.id);
+      if (currentIndex === -1) return;
 
-        // copy choices hiện tại
-        const existingChoices = currentGlobal.choices ? [...currentGlobal.choices] : [];
+      const currentGlobal = nextScenes[currentIndex];
+      const legacyNext = (currentGlobal as Scene & { next?: string }).next;
 
-        // tách choice auto (text null) và choice hiển thị
-        const autoChoices = existingChoices.filter((c) => c.text === null);
-        const displayChoices = existingChoices.filter((c) => c.text !== null);
+      const existingChoices = currentGlobal.choices ? [...currentGlobal.choices] : [];
+      const autoChoices = existingChoices.filter((c) => c.text === null);
+      const displayChoices = existingChoices.filter((c) => c.text !== null);
 
-        const newSceneWithFlow: Scene = { ...newScene, choices: newScene.choices ?? [] };
+      const newSceneWithFlow: Scene = { ...newScene, choices: newScene.choices ?? [] };
+      const updatedCurrentBase = {
+        ...currentGlobal,
+      };
 
-        // Nếu hiện đang là chuỗi auto-next (1 auto choice) thì chèn newScene vào giữa:
-        // current --auto--> oldTarget  =>  current --auto--> newScene --auto--> oldTarget
-        if (autoChoices.length === 1 && displayChoices.length === 0) {
-          const oldTarget = autoChoices[0].next;
+      if (displayChoices.length === 0 && (autoChoices.length === 1 || legacyNext)) {
+        const oldTarget = autoChoices[0]?.next ?? legacyNext;
 
-          const updatedCurrent: Scene = {
-            ...currentGlobal,
-            choices: [
-              {
-                text: null,
-                next: newSceneWithFlow.id,
-              },
-            ],
-          };
-
-          newSceneWithFlow.choices = [
-            {
-              text: null,
-              next: oldTarget,
-            },
-          ];
-
-          const newList = [...prev];
-          newList[currentIndex] = updatedCurrent;
-          newList.splice(currentIndex + 1, 0, newSceneWithFlow);
-          return newList;
-        }
-
-        // Nếu đang có các choice hiển thị, coi việc chèn scene như chia nhánh:
-        // tất cả choice từ current trỏ sang newScene
-        if (displayChoices.length > 0) {
-          const updatedCurrent: Scene = {
-            ...currentGlobal,
-            choices: displayChoices.map((c) => ({
-              ...c,
-              next: newSceneWithFlow.id,
-            })),
-          };
-
-          const newList = [...prev];
-          newList[currentIndex] = updatedCurrent;
-          newList.splice(currentIndex + 1, 0, newSceneWithFlow);
-          return newList;
-        }
-
-        // Nếu không có choice nào, tạo một auto-next từ current sang newScene
-        const updatedCurrent: Scene = {
-          ...currentGlobal,
+        nextScenes[currentIndex] = stripLegacyNext({
+          ...updatedCurrentBase,
           choices: [
             {
               text: null,
               next: newSceneWithFlow.id,
             },
           ],
-        };
+        });
 
-        const newList = [...prev];
-        newList[currentIndex] = updatedCurrent;
-        newList.splice(currentIndex + 1, 0, newSceneWithFlow);
+        newSceneWithFlow.choices = oldTarget
+          ? [
+              {
+                text: null,
+                next: oldTarget,
+              },
+            ]
+          : [];
 
-        return newList;
+        nextScenes.splice(currentIndex + 1, 0, newSceneWithFlow);
+        setScenes(nextScenes);
+        void saveStoryline(nextScenes).catch((error) => {
+          console.error('Failed to save storyline after insert:', error);
+        });
+        return;
+      }
+
+      if (displayChoices.length > 0) {
+        nextScenes[currentIndex] = stripLegacyNext({
+          ...updatedCurrentBase,
+          choices: displayChoices.map((c) => ({
+            ...c,
+            next: newSceneWithFlow.id,
+          })),
+        });
+
+        nextScenes.splice(currentIndex + 1, 0, newSceneWithFlow);
+        setScenes(nextScenes);
+        void saveStoryline(nextScenes).catch((error) => {
+          console.error('Failed to save storyline after insert:', error);
+        });
+        return;
+      }
+
+      nextScenes[currentIndex] = stripLegacyNext({
+        ...updatedCurrentBase,
+        choices: [
+          {
+            text: null,
+            next: newSceneWithFlow.id,
+          },
+        ],
+      });
+
+      nextScenes.splice(currentIndex + 1, 0, newSceneWithFlow);
+      setScenes(nextScenes);
+      void saveStoryline(nextScenes).catch((error) => {
+        console.error('Failed to save storyline after insert:', error);
       });
     },
-    [],
+    [scenes],
+  );
+
+  const handleDeleteNode = React.useCallback(
+    (groupScenes: Scene[]) => {
+      if (!groupScenes.length) return;
+
+      const deletedIds = new Set(groupScenes.map((scene) => scene.id));
+      const lastScene = groupScenes[groupScenes.length - 1];
+      const lastLegacyNext = (lastScene as Scene & { next?: string }).next;
+      const outgoingTargets = Array.from(
+        new Set(
+          [
+            ...(lastScene.choices?.map((choice) => choice.next).filter(Boolean) ?? []),
+            lastLegacyNext,
+          ].filter(Boolean) as string[],
+        ),
+      );
+      const bridgeTarget = outgoingTargets[0];
+
+      setScenes((prev) => {
+        const remainingScenes = prev.filter((scene) => !deletedIds.has(scene.id));
+
+        const nextScenes = remainingScenes.map((scene) => {
+          const legacyNext = (scene as Scene & { next?: string }).next;
+          let updatedScene = scene;
+          let changed = false;
+
+          if (legacyNext && deletedIds.has(legacyNext)) {
+            if (!bridgeTarget) {
+              const nextScene = { ...updatedScene } as Scene & { next?: string };
+              delete nextScene.next;
+              updatedScene = nextScene;
+              changed = true;
+            } else {
+              const nextScene = {
+                ...updatedScene,
+                choices: [{ text: null, next: bridgeTarget }],
+              } as Scene & {
+                next?: string;
+              };
+              delete nextScene.next;
+              updatedScene = nextScene;
+              changed = true;
+            }
+          }
+
+          if (updatedScene.choices?.some((choice) => deletedIds.has(choice.next))) {
+            const nextChoices = updatedScene.choices.flatMap((choice) => {
+              if (!deletedIds.has(choice.next)) return [choice];
+              if (!bridgeTarget) return [];
+              return [{ ...choice, next: bridgeTarget }];
+            });
+
+            updatedScene = {
+              ...updatedScene,
+              choices: nextChoices,
+            };
+            changed = true;
+          }
+
+          return changed ? updatedScene : scene;
+        });
+
+        void saveStoryline(nextScenes).catch((error) => {
+          console.error('Failed to save storyline after delete:', error);
+        });
+
+        return nextScenes;
+      });
+
+      setSelectedNodeId(null);
+      setSelectedEdgeId(null);
+      onSceneSelect(null);
+    },
+    [onSceneSelect],
   );
 
   const nodeTypes = React.useMemo(
@@ -254,6 +354,8 @@ export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasPr
         <SceneNoteNode
           {...props}
           onInsertScene={(index, newScene) => handleInsertScene(props.data.scenes, index, newScene)}
+          onDeleteNode={(nodeScenes) => handleDeleteNode(nodeScenes)}
+          createSceneId={createSceneId}
           onSceneClick={(scene: Scene) => {
             setSelectedNodeId(props.id);
             onSceneSelect(scene);
@@ -264,6 +366,8 @@ export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasPr
         <SceneNoteNode
           {...props}
           onInsertScene={(index, newScene) => handleInsertScene(props.data.scenes, index, newScene)}
+          onDeleteNode={(nodeScenes) => handleDeleteNode(nodeScenes)}
+          createSceneId={createSceneId}
           onSceneClick={(scene: Scene) => {
             setSelectedNodeId(props.id);
             onSceneSelect(scene);
@@ -271,7 +375,7 @@ export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasPr
         />
       ),
     }),
-    [handleInsertScene, onSceneSelect],
+    [createSceneId, handleDeleteNode, handleInsertScene, onSceneSelect],
   );
 
   const handleSelectionChange = React.useCallback((params: any) => {
@@ -292,35 +396,99 @@ export default function FlowCanvas({ onSceneSelect, storyVersion }: FlowCanvasPr
     }
   };
 
-  const handleDeleteEdge = React.useCallback((sourceId: string, targetId: string) => {
-    setScenes((prev) =>
-      prev.map((scene) => {
-        if (scene.id !== sourceId || !scene.choices) return scene;
-        return {
-          ...scene,
-          choices: scene.choices.filter((choice) => choice.next !== targetId),
-        };
-      }),
-    );
-    setSelectedEdgeId(null);
-  }, []);
+  const handleDeleteEdge = React.useCallback(
+    (sourceId: string, targetId: string) => {
+      const sourceScenes = getNodeScenesById(sourceId);
+      const targetScenes = getNodeScenesById(targetId);
+
+      if (!sourceScenes.length || !targetScenes.length) return;
+
+      const sourceScene = sourceScenes[sourceScenes.length - 1];
+      const targetSceneIds = new Set(targetScenes.map((scene) => scene.id));
+
+      setScenes((prev) => {
+        const nextScenes = prev.map((scene) => {
+          if (scene.id !== sourceScene.id) return scene;
+
+          let updatedScene = scene;
+          let changed = false;
+
+          const legacyNext = (scene as Scene & { next?: string }).next;
+          if (legacyNext && targetSceneIds.has(legacyNext)) {
+            const nextScene = { ...updatedScene } as Scene & { next?: string };
+            delete nextScene.next;
+            updatedScene = nextScene;
+            changed = true;
+          }
+
+          if (updatedScene.choices?.some((choice) => targetSceneIds.has(choice.next))) {
+            const nextChoices = updatedScene.choices.filter(
+              (choice) => !targetSceneIds.has(choice.next),
+            );
+            updatedScene = {
+              ...updatedScene,
+              choices: nextChoices.length ? nextChoices : undefined,
+            };
+            changed = true;
+          }
+
+          return changed ? updatedScene : scene;
+        });
+
+        void saveStoryline(nextScenes).catch((error) => {
+          console.error('Failed to save storyline after delete edge:', error);
+        });
+
+        return nextScenes;
+      });
+      setSelectedEdgeId(null);
+    },
+    [getNodeScenesById],
+  );
 
   // Xử lý tạo choice mới khi kéo nối giữa các node
-  const handleConnect = (params: any) => {
-    const { source, target } = params;
-    if (!source || !target || source === target) return;
-    setScenes((prev) => {
-      return prev.map((scene) => {
-        if (scene.id !== source) return scene;
-        // Tránh tạo choice trùng
-        if (scene.choices?.some((c) => c.next === target)) return scene;
-        return {
-          ...scene,
-          choices: [...(scene.choices ?? []), { text: '', next: target }],
-        };
+  const handleConnect = React.useCallback(
+    (params: any) => {
+      const { source, target } = params;
+      if (!source || !target || source === target) return;
+
+      const sourceScenes = getNodeScenesById(source);
+      const targetScenes = getNodeScenesById(target);
+
+      if (!sourceScenes.length || !targetScenes.length) return;
+
+      const sourceScene = sourceScenes[sourceScenes.length - 1];
+      const targetScene = targetScenes[0];
+
+      setScenes((prev) => {
+        const nextScenes = prev.map((scene) => {
+          if (scene.id !== sourceScene.id) return scene;
+
+          const isLinearNode = !scene.choices || scene.choices.length === 0;
+          if (isLinearNode) {
+            return {
+              ...scene,
+              next: targetScene.id,
+            } as Scene & { next?: string };
+          }
+
+          if (scene.choices?.some((choice) => choice.next === targetScene.id)) return scene;
+
+          return {
+            ...scene,
+            choices: [...(scene.choices ?? []), { text: '', next: targetScene.id }],
+          };
+        });
+
+        void saveStoryline(nextScenes).catch((error) => {
+          console.error('Failed to save storyline after connect:', error);
+        });
+
+        return nextScenes;
       });
-    });
-  };
+    },
+    [getNodeScenesById],
+  );
 
   // Derive edges with style/label before render
   const computedEdges = React.useMemo(

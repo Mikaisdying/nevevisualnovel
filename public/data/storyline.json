@@ -54,7 +54,56 @@
       "name": "Ame",
       "text": "I'm Ame."
     },
-    "next": "intro_5"
+    "choices": [
+      {
+        "text": null,
+        "next": "2"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "textbox": {
+      "name": "Ame",
+      "text": "Just Ame"
+    },
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "position": "center",
+        "focus": false
+      }
+    ],
+    "choices": [
+      {
+        "text": null,
+        "next": "3"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "textbox": {
+      "name": "Ame",
+      "text": "And"
+    },
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "position": "center",
+        "focus": false
+      }
+    ],
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_5"
+      }
+    ]
   },
   {
     "id": "intro_4",
@@ -222,7 +271,34 @@
       "name": "Ame",
       "text": "So listen carefully."
     },
-    "next": "intro_13"
+    "choices": [
+      {
+        "text": null,
+        "next": "1"
+      }
+    ]
+  },
+  {
+    "id": "1",
+    "textbox": {
+      "name": "Ame",
+      "text": "I just ask this 1 time\n"
+    },
+    "bg": "image",
+    "char": [
+      {
+        "name": "sample",
+        "pose": "normal",
+        "position": "center",
+        "focus": false
+      }
+    ],
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_13"
+      }
+    ]
   },
   {
     "id": "intro_13",
@@ -230,7 +306,8 @@
     "char": [
       {
         "name": "sample",
-        "pose": "normal"
+        "pose": "normal",
+        "position": "center"
       }
     ],
     "textbox": {
@@ -240,7 +317,7 @@
     "choices": [
       {
         "text": "Yes.",
-        "next": "intro_14"
+        "next": "intro_20"
       },
       {
         "text": "No.",
@@ -264,7 +341,7 @@
     "choices": [
       {
         "text": null,
-        "next": "intro_16"
+        "next": "intro_19"
       }
     ]
   },
@@ -281,66 +358,7 @@
       "name": "Ame",
       "text": "You should."
     },
-    "next": "intro_16"
-  },
-  {
-    "id": "intro_16",
-    "bg": "image",
-    "char": [
-      {
-        "name": "sample",
-        "pose": "normal"
-      }
-    ],
-    "textbox": {
-      "name": "Ame",
-      "text": "We don't have much time."
-    },
-    "choices": [
-      {
-        "text": null,
-        "next": "intro_17"
-      }
-    ]
-  },
-  {
-    "id": "intro_17",
-    "bg": "image",
-    "char": [
-      {
-        "name": "sample",
-        "pose": "normal"
-      }
-    ],
-    "textbox": {
-      "name": "Ame",
-      "text": "They're coming."
-    },
-    "next": "intro_18"
-  },
-  {
-    "id": "intro_18",
-    "bg": "image",
-    "char": [
-      {
-        "name": "sample",
-        "pose": "normal"
-      }
-    ],
-    "textbox": {
-      "name": "Ame",
-      "text": "You need to choose."
-    },
-    "choices": [
-      {
-        "text": "Stay",
-        "next": "intro_19"
-      },
-      {
-        "text": "Run",
-        "next": "intro_20"
-      }
-    ]
+    "next": "intro_14"
   },
   {
     "id": "intro_19",
@@ -375,7 +393,7 @@
       "name": "Ame",
       "text": "Smart."
     },
-    "next": "intro_21"
+    "next": "intro_14"
   },
   {
     "id": "intro_21",

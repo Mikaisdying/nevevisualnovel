@@ -5,7 +5,12 @@ import { Modal, Space, Input, Button, Select, Switch } from 'antd';
 export type SceneFormState = {
   name: string;
   text: string;
-  characters: { id: string; focus: boolean }[];
+  characters: {
+    id: string;
+    focus: boolean;
+    pose?: string;
+    position?: 'left' | 'center' | 'right';
+  }[];
   bg: string;
   choices: { text: string; next?: string }[];
 };
