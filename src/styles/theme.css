@@ -1,0 +1,108 @@
+/*
+ * Design tokens của game (lấy từ Figma "Visual Novel – UI & Prototype").
+ *
+ * Mọi màu / font / bo góc / đổ bóng của UI game đều đọc từ các biến --vn-* ở
+ * đây. Muốn đổi theme: sửa giá trị trong :root, hoặc thêm một khối
+ * [data-vn-theme='ten-theme'] { ... } ghi đè các biến cần đổi rồi đặt
+ * data-vn-theme trên .game-canvas (xem GAME_CONFIG.theme trong src/config/game.ts).
+ *
+ * Các kích thước tính theo px của canvas thiết kế 1280x720; canvas được scale
+ * nguyên khối nên không cần rem/vw.
+ */
+:root {
+  /* Font */
+  --vn-font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --vn-font-body: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
+
+  /* Màu nền cảnh (fallback khi chưa có ảnh background) */
+  --vn-scene-1: #0a0a1f;
+  --vn-scene-2: #1b1340;
+  --vn-scene-3: #2e1e5c;
+
+  /* Màu chính */
+  --vn-primary: #8b6cf0;
+  --vn-primary-light: #b79cff;
+  --vn-on-primary: #1b1340;
+  --vn-gold: #f2e6c2;
+  --vn-text: #ede7ff;
+  --vn-muted: #9a8fc2;
+  --vn-accent: #b79cff;
+  --vn-danger: #ff8fa3;
+
+  /* Bề mặt */
+  --vn-surface: rgb(26 20 56 / 0.8);
+  --vn-surface-hover: rgb(44 34 92 / 0.9);
+  --vn-card: rgb(18 15 43 / 0.9);
+  --vn-panel-from: rgb(23 18 58 / 0.97);
+  --vn-panel-to: rgb(14 11 36 / 0.97);
+  --vn-dialogue-from: rgb(23 18 58 / 0.9);
+  --vn-dialogue-to: rgb(11 9 32 / 0.94);
+  --vn-choice-bg: rgb(23 18 58 / 0.92);
+  --vn-track: rgb(255 255 255 / 0.1);
+  --vn-dim: 5 4 15; /* dùng dạng rgb(var(--vn-dim) / alpha) */
+
+  /* Viền */
+  --vn-border: rgb(183 156 255 / 0.4);
+  --vn-border-strong: rgb(183 156 255 / 0.45);
+  --vn-border-subtle: rgb(183 156 255 / 0.16);
+  --vn-border-choice: rgb(242 230 194 / 0.55);
+
+  /* Bo góc */
+  --vn-radius-sm: 8px;
+  --vn-radius: 10px;
+  --vn-radius-card: 12px;
+  --vn-radius-slot: 14px;
+  --vn-radius-panel: 18px;
+
+  /* Đổ bóng / phát sáng */
+  --vn-glow-primary: 0 0 24px rgb(139 108 240 / 0.5);
+  --vn-glow-choice: 0 0 30px rgb(139 108 240 / 0.35);
+  --vn-glow-panel: 0 0 60px rgb(139 108 240 / 0.35);
+  --vn-glow-dialogue: 0 0 40px rgb(139 108 240 / 0.3);
+
+  /* Nhân vật: khung sprite (Figma 260x520, đỉnh y=110 → đáy cách mép dưới 90px) */
+  --vn-char-height: 520px;
+  --vn-char-bottom: 90px;
+  --vn-char-dim: brightness(0.45) saturate(0.8);
+  --vn-char-dim-shift: 10px;
+  --vn-char-glow-size: 30px;
+  --vn-char-glow-default: #b79cff;
+
+  /* Khung thoại */
+  --vn-dialogue-opacity: 1;
+}
+
+/*
+ * Ví dụ theme sáng kiểu light novel — bật bằng GAME_CONFIG.theme = 'paper'.
+ * Chỉ cần ghi đè các biến muốn đổi.
+ */
+[data-vn-theme='paper'] {
+  --vn-scene-1: #f6efe1;
+  --vn-scene-2: #efe3cc;
+  --vn-scene-3: #e6d6b8;
+  --vn-primary: #b5703c;
+  --vn-primary-light: #d99a62;
+  --vn-on-primary: #fffaf0;
+  --vn-gold: #5b3a1e;
+  --vn-text: #3b2a1c;
+  --vn-muted: #8a6f55;
+  --vn-accent: #b5703c;
+  --vn-surface: rgb(255 250 240 / 0.85);
+  --vn-surface-hover: rgb(255 244 222 / 0.95);
+  --vn-card: rgb(255 250 240 / 0.9);
+  --vn-panel-from: rgb(255 251 243 / 0.97);
+  --vn-panel-to: rgb(246 236 216 / 0.97);
+  --vn-dialogue-from: rgb(255 251 243 / 0.94);
+  --vn-dialogue-to: rgb(243 230 201 / 0.96);
+  --vn-choice-bg: rgb(255 251 243 / 0.95);
+  --vn-track: rgb(91 58 30 / 0.15);
+  --vn-dim: 60 40 20;
+  --vn-border: rgb(181 112 60 / 0.4);
+  --vn-border-strong: rgb(181 112 60 / 0.55);
+  --vn-border-subtle: rgb(181 112 60 / 0.18);
+  --vn-border-choice: rgb(181 112 60 / 0.6);
+  --vn-glow-primary: 0 4px 16px rgb(181 112 60 / 0.35);
+  --vn-glow-choice: 0 4px 20px rgb(91 58 30 / 0.2);
+  --vn-glow-panel: 0 8px 40px rgb(91 58 30 / 0.25);
+  --vn-glow-dialogue: 0 4px 32px rgb(91 58 30 / 0.25);
+}

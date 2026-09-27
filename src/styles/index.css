@@ -1,12 +1,26 @@
+@import 'tailwindcss';
+/* Reset của antd (editor) nằm trong layer base để không đè style component / utility của game */
+@import 'antd/dist/reset.css' layer(base);
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
-
-@tailwind base;
+/* Font UI game (Figma): Be Vietnam Pro cho chữ thường, Cormorant Garamond cho tiêu đề */
+@import '@fontsource/be-vietnam-pro/vietnamese-400.css';
+@import '@fontsource/be-vietnam-pro/vietnamese-500.css';
+@import '@fontsource/be-vietnam-pro/vietnamese-600.css';
+@import '@fontsource/be-vietnam-pro/latin-400.css';
+@import '@fontsource/be-vietnam-pro/latin-500.css';
+@import '@fontsource/be-vietnam-pro/latin-600.css';
+@import '@fontsource/cormorant-garamond/vietnamese-400-italic.css';
+@import '@fontsource/cormorant-garamond/vietnamese-600.css';
+@import '@fontsource/cormorant-garamond/vietnamese-700.css';
+@import '@fontsource/cormorant-garamond/latin-400-italic.css';
+@import '@fontsource/cormorant-garamond/latin-600.css';
+@import '@fontsource/cormorant-garamond/latin-700.css';
+@import './theme.css';
+@import './vn-ui.css';
 
 @custom-variant dark (&:is(.dark *));
-@tailwind components;
-@tailwind utilities;
 
 html,
 body {
@@ -37,17 +51,28 @@ body {
   justify-content: center;
 }
 
-/* Game view wrapper - letterbox 16:9 */
+/* Game view wrapper - phủ toàn viewport, phần dư ngoài canvas là viền đen */
 .game-view-wrapper {
-  aspect-ratio: 16 / 9;
+  position: fixed;
+  inset: 0;
   background: #000;
   overflow: hidden;
-  position: relative;
-  margin: auto;
+}
 
-  /* Crop top/bottom khi tall, letterbox top/bottom khi wide */
-  width: min(100vw, calc(100vh * 16 / 9));
-  height: min(100vh, calc(100vw * 9 / 16));
+/*
+ * Toàn bộ UI game được thiết kế theo độ phân giải chuẩn 1280x720.
+ * useCanvasScale tính scale = min(rộng/1280, cao/720) nên canvas luôn nằm
+ * trọn trong màn hình (fit cả ngang lẫn dọc), giữ chính xác tỉ lệ 16:9;
+ * ảnh raster bên trong được scale cùng canvas nên không bị méo.
+ */
+.game-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  transform-origin: center center;
 }
 
 /* Z-Index Layering System */

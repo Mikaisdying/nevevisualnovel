@@ -1,40 +1,28 @@
-import React from 'react';
-
-export interface Choice {
-  text: string;
-  next: string;
-}
+import { VnButton } from '@/components/ui';
+import { useI18n } from '@/i18n';
+import type { Choice } from '@/types/scene';
 
 interface ChoiceListProps {
   choices: Choice[];
   onSelect: (choice: Choice) => void;
 }
 
-const ChoiceList: React.FC<ChoiceListProps> = ({ choices, onSelect }) => {
+/** Figma: "Choices" — cột nút Choice rộng 560 đặt tại y=170, cách nhau 16. */
+export default function ChoiceList({ choices, onSelect }: ChoiceListProps) {
+  const { tx } = useI18n();
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '90%',
-        maxWidth: '48rem',
-        pointerEvents: 'auto',
-      }}
-      className="layer-foreground flex flex-col gap-4"
-    >
+    <div className="layer-ui vn-rise-in absolute top-[170px] left-[360px] flex w-[560px] flex-col gap-[16px]">
       {choices.map((choice, idx) => (
-        <button
-          key={idx}
-          className="rounded-xl border-2 border-orange-300 bg-white/90 px-6 py-3 text-lg font-semibold text-black shadow-lg transition-all outline-none hover:bg-orange-100 focus:ring-2 focus:ring-orange-400"
+        <VnButton
+          key={`${choice.next}-${idx}`}
+          variant="choice"
+          size="lg"
+          className="w-full"
           onClick={() => onSelect(choice)}
         >
-          {choice.text}
-        </button>
+          {tx(choice.text)}
+        </VnButton>
       ))}
     </div>
   );
-};
-
-export default ChoiceList;
+}
