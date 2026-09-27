@@ -1,101 +1,126 @@
 [
   {
     "id": "intro_1",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
-        "focus": false
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Hello..."
+      "text": {
+        "vi": "Xin chào…",
+        "en": "Hello..."
+      }
     },
-    "next": "intro_2"
-  },
-  {
-    "id": "intro_2",
-    "bg": "image",
-    "char": [
-      {
-        "name": "sample",
-        "pose": "normal",
-        "focus": false
-      }
-    ],
-    "textbox": {
-      "name": "Ame",
-      "text": "You finally woke up."
+    "chapter": {
+      "vi": "Mở đầu · Nơi trú ẩn",
+      "en": "Prologue · The Shelter"
     },
     "choices": [
       {
-        "text": "Who are you?",
+        "text": null,
+        "next": "intro_2"
+      }
+    ]
+  },
+  {
+    "id": "intro_2",
+    "bg": "shelter",
+    "char": [
+      {
+        "name": "ame",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": "Ame",
+      "text": {
+        "vi": "Cuối cùng cậu cũng tỉnh rồi.",
+        "en": "You finally woke up."
+      }
+    },
+    "choices": [
+      {
+        "text": {
+          "vi": "Cậu là ai?",
+          "en": "Who are you?"
+        },
         "next": "intro_3"
       },
       {
-        "text": "Where am I?",
+        "text": {
+          "vi": "Đây là đâu?",
+          "en": "Where am I?"
+        },
         "next": "intro_4"
       }
     ]
   },
   {
     "id": "intro_3",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
-        "focus": false
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "I'm Ame."
+      "text": {
+        "vi": "Tôi là Ame.",
+        "en": "I'm Ame."
+      }
     },
     "choices": [
       {
         "text": null,
-        "next": "2"
+        "next": "intro_3a"
       }
     ]
   },
   {
-    "id": "2",
+    "id": "intro_3a",
     "textbox": {
       "name": "Ame",
-      "text": "Just Ame"
+      "text": {
+        "vi": "Chỉ Ame thôi.",
+        "en": "Just Ame"
+      }
     },
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
-        "position": "center",
-        "focus": false
+        "name": "ame",
+        "pose": "default",
+        "position": "center"
       }
     ],
     "choices": [
       {
         "text": null,
-        "next": "3"
+        "next": "intro_3b"
       }
     ]
   },
   {
-    "id": "3",
+    "id": "intro_3b",
     "textbox": {
       "name": "Ame",
-      "text": "And"
+      "text": {
+        "vi": "Và…",
+        "en": "And"
+      }
     },
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
-        "position": "center",
-        "focus": false
+        "name": "ame",
+        "pose": "default",
+        "position": "center"
       }
     ],
     "choices": [
@@ -107,89 +132,124 @@
   },
   {
     "id": "intro_4",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Somewhere safe... for now."
+      "text": {
+        "vi": "Một nơi an toàn… ít nhất là lúc này.",
+        "en": "Somewhere safe... for now."
+      }
     },
-    "next": "intro_5"
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_5"
+      }
+    ]
   },
   {
     "id": "intro_5",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
+        "name": "ame",
+        "pose": "default",
         "position": "center"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "You don't remember anything, right?"
+      "text": {
+        "vi": "Cậu không nhớ gì cả, đúng không?",
+        "en": "You don't remember anything, right?"
+      }
     },
     "choices": [
       {
-        "text": "No...",
-        "next": "intro_6"
+        "text": {
+          "vi": "Có lẽ… một chút.",
+          "en": "Maybe a little."
+        },
+        "next": "intro_7"
       },
       {
-        "text": "Maybe a little.",
-        "next": "intro_7"
+        "text": {
+          "vi": "Tôi… không nhớ gì hết.",
+          "en": "I fu"
+        },
+        "next": "intro_6"
       }
     ]
   },
   {
     "id": "intro_6",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
+        "name": "ame",
+        "pose": "default",
         "position": "center"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "I figured"
+      "text": {
+        "vi": "Tôi đoán vậy.",
+        "en": "I figured"
+      }
     },
-    "next": "intro_8",
-    "choices": []
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_8"
+      }
+    ]
   },
   {
     "id": "intro_7",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Then hold onto it."
+      "text": {
+        "vi": "Vậy thì hãy giữ lấy nó.",
+        "en": "Then hold onto it."
+      }
     },
-    "next": "intro_8"
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_8"
+      }
+    ]
   },
   {
     "id": "intro_8",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
+        "name": "ame",
+        "pose": "default",
         "position": "center"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Things are... complicated"
+      "text": {
+        "vi": "Mọi chuyện… phức tạp lắm.",
+        "en": "Things are... complicated"
+      }
     },
     "choices": [
       {
@@ -200,16 +260,19 @@
   },
   {
     "id": "intro_9",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "And dangerous."
+      "text": {
+        "vi": "Và nguy hiểm nữa.",
+        "en": "And dangerous."
+      }
     },
     "choices": [
       {
@@ -220,16 +283,19 @@
   },
   {
     "id": "intro_10",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "You shouldn't be here."
+      "text": {
+        "vi": "Lẽ ra cậu không nên ở đây.",
+        "en": "You shouldn't be here."
+      }
     },
     "choices": [
       {
@@ -240,16 +306,19 @@
   },
   {
     "id": "intro_11",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "But now you are."
+      "text": {
+        "vi": "Nhưng giờ thì cậu đã ở đây rồi.",
+        "en": "But now you are."
+      }
     },
     "choices": [
       {
@@ -260,37 +329,42 @@
   },
   {
     "id": "intro_12",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "So listen carefully."
+      "text": {
+        "vi": "Nên hãy nghe cho kỹ.",
+        "en": "So listen carefully."
+      }
     },
     "choices": [
       {
         "text": null,
-        "next": "1"
+        "next": "intro_12a"
       }
     ]
   },
   {
-    "id": "1",
+    "id": "intro_12a",
     "textbox": {
       "name": "Ame",
-      "text": "I just ask this 1 time\n"
+      "text": {
+        "vi": "Tôi chỉ hỏi một lần thôi.",
+        "en": "I just ask this 1 time\n"
+      }
     },
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
-        "position": "center",
-        "focus": false
+        "name": "ame",
+        "pose": "default",
+        "position": "center"
       }
     ],
     "choices": [
@@ -302,41 +376,60 @@
   },
   {
     "id": "intro_13",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal",
+        "name": "ame",
+        "pose": "default",
         "position": "center"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Do you trust me?"
+      "text": {
+        "vi": "Cậu có tin tôi không?",
+        "en": "Do you trust me?"
+      }
     },
     "choices": [
       {
-        "text": "Yes.",
+        "text": {
+          "vi": "Có.",
+          "en": "Yes."
+        },
         "next": "intro_20"
       },
       {
-        "text": "No.",
+        "text": {
+          "vi": "Không.",
+          "en": "No."
+        },
         "next": "intro_15"
+      },
+      {
+        "text": {
+          "vi": "Làm ơn…",
+          "en": "Please"
+        },
+        "next": "intro_16"
       }
     ]
   },
   {
     "id": "intro_14",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Good."
+      "text": {
+        "vi": "Tốt.",
+        "en": "Good."
+      }
     },
     "choices": [
       {
@@ -347,31 +440,67 @@
   },
   {
     "id": "intro_15",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "You should."
+      "text": {
+        "vi": "Cậu nên tin.",
+        "en": "You should."
+      }
     },
-    "next": "intro_14"
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_21"
+      }
+    ]
+  },
+  {
+    "id": "intro_16",
+    "textbox": {
+      "name": "Ame",
+      "text": {
+        "vi": "Vậy là tốt rồi.",
+        "en": "It's good"
+      }
+    },
+    "bg": "shelter",
+    "char": [
+      {
+        "name": "ame",
+        "pose": "default",
+        "position": "center",
+        "focus": true
+      }
+    ],
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_21"
+      }
+    ]
   },
   {
     "id": "intro_19",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Brave."
+      "text": {
+        "vi": "Gan đấy.",
+        "en": "Brave."
+      }
     },
     "choices": [
       {
@@ -382,31 +511,42 @@
   },
   {
     "id": "intro_20",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Smart."
+      "text": {
+        "vi": "Khôn ngoan.",
+        "en": "Smart."
+      }
     },
-    "next": "intro_14"
+    "choices": [
+      {
+        "text": null,
+        "next": "intro_14"
+      }
+    ]
   },
   {
     "id": "intro_21",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Either way..."
+      "text": {
+        "vi": "Dù sao thì…",
+        "en": "Either way..."
+      }
     },
     "choices": [
       {
@@ -417,16 +557,19 @@
   },
   {
     "id": "intro_22",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "You're involved now."
+      "text": {
+        "vi": "Giờ cậu đã bị cuốn vào chuyện này rồi.",
+        "en": "You're involved now."
+      }
     },
     "choices": [
       {
@@ -437,16 +580,19 @@
   },
   {
     "id": "intro_23",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "There's no turning back."
+      "text": {
+        "vi": "Không còn đường lui đâu.",
+        "en": "There's no turning back."
+      }
     },
     "choices": [
       {
@@ -457,16 +603,19 @@
   },
   {
     "id": "intro_24",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Not anymore."
+      "text": {
+        "vi": "Không còn nữa.",
+        "en": "Not anymore."
+      }
     },
     "choices": [
       {
@@ -477,16 +626,19 @@
   },
   {
     "id": "intro_25",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Can you stand?"
+      "text": {
+        "vi": "Cậu đứng dậy được không?",
+        "en": "Can you stand?"
+      }
     },
     "choices": [
       {
@@ -497,16 +649,19 @@
   },
   {
     "id": "intro_26",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Good."
+      "text": {
+        "vi": "Tốt.",
+        "en": "Good."
+      }
     },
     "choices": [
       {
@@ -517,16 +672,19 @@
   },
   {
     "id": "intro_27",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Follow me."
+      "text": {
+        "vi": "Đi theo tôi.",
+        "en": "Follow me."
+      }
     },
     "choices": [
       {
@@ -537,16 +695,19 @@
   },
   {
     "id": "intro_28",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Stay close."
+      "text": {
+        "vi": "Đi sát vào.",
+        "en": "Stay close."
+      }
     },
     "choices": [
       {
@@ -557,16 +718,19 @@
   },
   {
     "id": "intro_29",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Don't make a sound."
+      "text": {
+        "vi": "Đừng gây ra tiếng động.",
+        "en": "Don't make a sound."
+      }
     },
     "choices": [
       {
@@ -577,11 +741,11 @@
   },
   {
     "id": "intro_30",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
@@ -597,16 +761,19 @@
   },
   {
     "id": "intro_31",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Did you hear that?"
+      "text": {
+        "vi": "Cậu có nghe thấy không?",
+        "en": "Did you hear that?"
+      }
     },
     "choices": [
       {
@@ -617,16 +784,19 @@
   },
   {
     "id": "intro_32",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "We need to hurry."
+      "text": {
+        "vi": "Chúng ta phải nhanh lên.",
+        "en": "We need to hurry."
+      }
     },
     "choices": [
       {
@@ -637,16 +807,19 @@
   },
   {
     "id": "intro_33",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Almost there."
+      "text": {
+        "vi": "Sắp tới rồi.",
+        "en": "Almost there."
+      }
     },
     "choices": [
       {
@@ -657,16 +830,19 @@
   },
   {
     "id": "intro_34",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Just a little more."
+      "text": {
+        "vi": "Thêm chút nữa thôi.",
+        "en": "Just a little more."
+      }
     },
     "choices": [
       {
@@ -677,16 +853,19 @@
   },
   {
     "id": "intro_35",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Here."
+      "text": {
+        "vi": "Đây rồi.",
+        "en": "Here."
+      }
     },
     "choices": [
       {
@@ -697,16 +876,19 @@
   },
   {
     "id": "intro_36",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "We can rest for a moment."
+      "text": {
+        "vi": "Chúng ta nghỉ một lát được rồi.",
+        "en": "We can rest for a moment."
+      }
     },
     "choices": [
       {
@@ -717,16 +899,19 @@
   },
   {
     "id": "intro_37",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "You did well."
+      "text": {
+        "vi": "Cậu làm tốt lắm.",
+        "en": "You did well."
+      }
     },
     "choices": [
       {
@@ -737,16 +922,19 @@
   },
   {
     "id": "intro_38",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Even without memories."
+      "text": {
+        "vi": "Dù chẳng còn chút ký ức nào.",
+        "en": "Even without memories."
+      }
     },
     "choices": [
       {
@@ -757,16 +945,19 @@
   },
   {
     "id": "intro_39",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Maybe that's better."
+      "text": {
+        "vi": "Có khi như vậy lại hay hơn.",
+        "en": "Maybe that's better."
+      }
     },
     "choices": [
       {
@@ -777,16 +968,19 @@
   },
   {
     "id": "intro_40",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Less pain."
+      "text": {
+        "vi": "Đỡ đau hơn.",
+        "en": "Less pain."
+      }
     },
     "choices": [
       {
@@ -797,16 +991,19 @@
   },
   {
     "id": "intro_41",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Anyway..."
+      "text": {
+        "vi": "Mà thôi…",
+        "en": "Anyway..."
+      }
     },
     "choices": [
       {
@@ -817,16 +1014,19 @@
   },
   {
     "id": "intro_42",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Welcome back."
+      "text": {
+        "vi": "Chào mừng cậu trở lại.",
+        "en": "Welcome back."
+      }
     },
     "choices": [
       {
@@ -837,16 +1037,19 @@
   },
   {
     "id": "intro_43",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "To this world."
+      "text": {
+        "vi": "Với thế giới này.",
+        "en": "To this world."
+      }
     },
     "choices": [
       {
@@ -857,16 +1060,19 @@
   },
   {
     "id": "intro_44",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Let's survive it together."
+      "text": {
+        "vi": "Cùng nhau sống sót nhé.",
+        "en": "Let's survive it together."
+      }
     },
     "choices": [
       {
@@ -877,16 +1083,19 @@
   },
   {
     "id": "intro_45",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Alright?"
+      "text": {
+        "vi": "Được chứ?",
+        "en": "Alright?"
+      }
     },
     "choices": [
       {
@@ -897,16 +1106,19 @@
   },
   {
     "id": "intro_46",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Good."
+      "text": {
+        "vi": "Tốt.",
+        "en": "Good."
+      }
     },
     "choices": [
       {
@@ -917,16 +1129,19 @@
   },
   {
     "id": "intro_47",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Now let's move."
+      "text": {
+        "vi": "Giờ thì đi thôi.",
+        "en": "Now let's move."
+      }
     },
     "choices": [
       {
@@ -937,16 +1152,19 @@
   },
   {
     "id": "intro_48",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Stay behind me."
+      "text": {
+        "vi": "Đi sau lưng tôi.",
+        "en": "Stay behind me."
+      }
     },
     "choices": [
       {
@@ -957,16 +1175,19 @@
   },
   {
     "id": "intro_49",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Whatever happens..."
+      "text": {
+        "vi": "Dù có chuyện gì xảy ra…",
+        "en": "Whatever happens..."
+      }
     },
     "choices": [
       {
@@ -977,16 +1198,804 @@
   },
   {
     "id": "intro_50",
-    "bg": "image",
+    "bg": "shelter",
     "char": [
       {
-        "name": "sample",
-        "pose": "normal"
+        "name": "ame",
+        "pose": "default"
       }
     ],
     "textbox": {
       "name": "Ame",
-      "text": "Don't let go."
+      "text": {
+        "vi": "Đừng buông tay.",
+        "en": "Don't let go."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "prologue_end"
+      }
+    ]
+  },
+  {
+    "id": "prologue_end",
+    "bg": "moonrise",
+    "card": {
+      "type": "end",
+      "eyebrow": {
+        "vi": "Hết phần mở đầu",
+        "en": "End of Prologue"
+      },
+      "title": {
+        "vi": "Thức Giấc",
+        "en": "Awakening"
+      },
+      "subtitle": {
+        "vi": "Lựa chọn của bạn đã được ghi lại. Câu chuyện sẽ tiếp tục…",
+        "en": "Your choices have been recorded. The story continues…"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_title"
+      }
+    ]
+  },
+  {
+    "id": "ch1_title",
+    "bg": "moonrise",
+    "card": {
+      "type": "title",
+      "eyebrow": {
+        "vi": "Chương 1",
+        "en": "Chapter 1"
+      },
+      "title": {
+        "vi": "Khu Rừng Trăng",
+        "en": "The Moonlit Forest"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_01"
+      }
+    ]
+  },
+  {
+    "id": "ch1_01",
+    "bg": "night",
+    "chapter": {
+      "vi": "Chương 1 · Khu rừng trăng",
+      "en": "Chapter 1 · The Moonlit Forest"
+    },
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Cậu cũng không ngủ được sao? Đêm nay trăng sáng lạ thường…",
+        "en": "Can't sleep either? The moon is strangely bright tonight…"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_02"
+      }
+    ]
+  },
+  {
+    "id": "ch1_02",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": {
+        "vi": "Bạn",
+        "en": "You"
+      },
+      "text": {
+        "vi": "Ừ. Mình cứ nghe thấy tiếng gì đó vọng ra từ khu rừng.",
+        "en": "Yeah. I keep hearing something echoing from the forest."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_03"
+      }
+    ]
+  },
+  {
+    "id": "ch1_03",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "happy"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Người trong làng nói rằng, mỗi trăm năm, mặt trăng sẽ mở một cánh cửa.",
+        "en": "The villagers say that once every hundred years, the moon opens a door."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_04"
+      }
+    ]
+  },
+  {
+    "id": "ch1_04",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Và đêm nay… chính là đêm đó.",
+        "en": "And tonight… is that night."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_05"
+      }
+    ]
+  },
+  {
+    "id": "ch1_05",
+    "bg": "night",
+    "cg": "first_night",
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Nhìn kìa — ánh trăng đang chảy xuống bìa rừng như một dòng sông.",
+        "en": "Look — the moonlight is flowing down to the forest's edge like a river."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_06"
+      }
+    ]
+  },
+  {
+    "id": "ch1_06",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Cậu có muốn cùng tớ đi tìm cánh cửa ấy không?",
+        "en": "Do you want to go find that door with me?"
+      }
+    },
+    "choices": [
+      {
+        "text": {
+          "vi": "Đi theo Luna vào rừng",
+          "en": "Follow Luna into the forest"
+        },
+        "next": "ch1_a_01"
+      },
+      {
+        "text": {
+          "vi": "Khuyên Luna ở lại làng",
+          "en": "Convince Luna to stay in the village"
+        },
+        "next": "ch1_b_01"
+      }
+    ]
+  },
+  {
+    "id": "ch1_a_01",
+    "bg": "forest",
+    "chapter": {
+      "vi": "Chương 1 · Tuyến A — Ánh trăng dẫn lối",
+      "en": "Chapter 1 · Route A — Led by Moonlight"
+    },
+    "char": [
+      {
+        "name": "luna",
+        "pose": "happy"
+      }
+    ],
+    "setFlags": {
+      "followed_luna": true
+    },
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Tớ biết cậu sẽ đồng ý mà! Đi thôi, cứ theo ánh trăng nhé.",
+        "en": "I knew you'd say yes! Let's go — just follow the moonlight."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_a_02"
+      }
+    ]
+  },
+  {
+    "id": "ch1_a_02",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "happy"
+      }
+    ],
+    "textbox": {
+      "name": {
+        "vi": "Bạn",
+        "en": "You"
+      },
+      "text": {
+        "vi": "Con đường này… sáng như được rải bạc vậy.",
+        "en": "This path… it shines like it's been strewn with silver."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_a_03"
+      }
+    ]
+  },
+  {
+    "id": "ch1_a_03",
+    "bg": "forest",
+    "cg": "mirror_lake",
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Hồ Gương đây rồi. Người ta bảo mặt hồ phản chiếu điều ta mong muốn nhất.",
+        "en": "Here it is, Mirror Lake. They say its surface reflects what you wish for most."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_a_04"
+      }
+    ]
+  },
+  {
+    "id": "ch1_a_04",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Cậu nhìn thấy gì trong đó? …Không, đừng nói. Giữ lấy nó nhé.",
+        "en": "What do you see in it? …No, don't tell me. Keep it close."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_end"
+      }
+    ]
+  },
+  {
+    "id": "ch1_b_01",
+    "bg": "sad",
+    "chapter": {
+      "vi": "Chương 1 · Tuyến B — Lời tạm biệt",
+      "en": "Chapter 1 · Route B — A Farewell"
+    },
+    "char": [
+      {
+        "name": "luna",
+        "pose": "sad"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "…Cậu nói đúng. Rừng đêm không phải nơi để đùa.",
+        "en": "…You're right. The forest at night is no place to fool around."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_b_02"
+      }
+    ]
+  },
+  {
+    "id": "ch1_b_02",
+    "bg": "sad",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "sad"
+      }
+    ],
+    "textbox": {
+      "name": {
+        "vi": "Bạn",
+        "en": "You"
+      },
+      "text": {
+        "vi": "Mình chỉ không muốn cậu gặp nguy hiểm.",
+        "en": "I just don't want you to get hurt."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_b_03"
+      }
+    ]
+  },
+  {
+    "id": "ch1_b_03",
+    "bg": "sad",
+    "cg": "farewell",
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Vậy hứa với tớ nhé — nếu cánh cửa mở lần nữa, chúng ta sẽ cùng đi.",
+        "en": "Then promise me — if the door opens again, we'll go together."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_b_04"
+      }
+    ]
+  },
+  {
+    "id": "ch1_b_04",
+    "bg": "sad",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Ngủ ngon. Hẹn gặp lại dưới ánh trăng.",
+        "en": "Good night. See you under the moonlight."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch1_end"
+      }
+    ]
+  },
+  {
+    "id": "ch1_end",
+    "bg": "moonrise",
+    "card": {
+      "type": "end",
+      "eyebrow": {
+        "vi": "Hết chương 1",
+        "en": "End of Chapter 1"
+      },
+      "title": {
+        "vi": "Dưới Ánh Trăng",
+        "en": "Under the Moonlight"
+      },
+      "subtitle": {
+        "vi": "Lựa chọn của bạn đã được ghi lại. Câu chuyện sẽ tiếp tục…",
+        "en": "Your choices have been recorded. The story continues…"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_title"
+      }
+    ]
+  },
+  {
+    "id": "ch2_title",
+    "bg": "moonrise",
+    "card": {
+      "type": "title",
+      "eyebrow": {
+        "vi": "Chương 2",
+        "en": "Chapter 2"
+      },
+      "title": {
+        "vi": "Cánh Cửa Ánh Trăng",
+        "en": "The Moonlit Door"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_01"
+      }
+    ]
+  },
+  {
+    "id": "ch2_01",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default",
+        "position": "left"
+      },
+      {
+        "name": "kai",
+        "pose": "default",
+        "position": "right"
+      }
+    ],
+    "chapter": {
+      "vi": "Chương 2 · Cổng làng",
+      "en": "Chapter 2 · The Village Gate"
+    },
+    "textbox": {
+      "name": "Kai",
+      "text": {
+        "vi": "Hai người định lẻn đi đâu giữa đêm thế này?",
+        "en": "Where are you two sneaking off to in the middle of the night?"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_02"
+      }
+    ]
+  },
+  {
+    "id": "ch2_02",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "happy",
+        "position": "left"
+      },
+      {
+        "name": "kai",
+        "pose": "default",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Kai! Cậu làm tớ giật mình… Bọn tớ chỉ đi dạo thôi mà.",
+        "en": "Kai! You scared me… We're just going for a walk."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_03"
+      }
+    ]
+  },
+  {
+    "id": "ch2_03",
+    "bg": "night",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default",
+        "position": "left"
+      },
+      {
+        "name": "kai",
+        "pose": "happy",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Kai",
+      "text": {
+        "vi": "Đi dạo mà mang theo cả bản đồ khu rừng à? Thôi được, tớ đi cùng.",
+        "en": "A walk, with a map of the forest? Fine, I'm coming too."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_04"
+      }
+    ]
+  },
+  {
+    "id": "ch2_04",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default",
+        "position": "left"
+      },
+      {
+        "name": "mira",
+        "pose": "happy",
+        "position": "center"
+      },
+      {
+        "name": "kai",
+        "pose": "default",
+        "position": "right"
+      }
+    ],
+    "chapter": {
+      "vi": "Chương 2 · Bìa rừng",
+      "en": "Chapter 2 · The Forest's Edge"
+    },
+    "textbox": {
+      "name": "Mira",
+      "text": {
+        "vi": "Khoan đã! Các cậu định vào rừng mà không có ai biết đọc bản đồ sao?",
+        "en": "Wait! You were going into the forest without anyone who can read a map?"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_05"
+      }
+    ]
+  },
+  {
+    "id": "ch2_05",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "happy",
+        "position": "left"
+      },
+      {
+        "name": "mira",
+        "pose": "default",
+        "position": "center"
+      },
+      {
+        "name": "kai",
+        "pose": "default",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Mira! Cậu cũng đến à? Tốt quá rồi!",
+        "en": "Mira! You came too? That's great!"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_06"
+      }
+    ]
+  },
+  {
+    "id": "ch2_06",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default",
+        "position": "left"
+      },
+      {
+        "name": "mira",
+        "pose": "default",
+        "position": "center"
+      },
+      {
+        "name": "kai",
+        "pose": "sad",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Kai",
+      "text": {
+        "vi": "Thêm một người là thêm một phần rắc rối…",
+        "en": "One more person, one more headache…"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_07"
+      }
+    ]
+  },
+  {
+    "id": "ch2_07",
+    "bg": "forest",
+    "cg": "forest_edge",
+    "textbox": {
+      "name": "Mira",
+      "text": {
+        "vi": "Nói thế thôi chứ cậu vui lắm đúng không, Kai?",
+        "en": "You say that, but you're glad, aren't you, Kai?"
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_08"
+      }
+    ]
+  },
+  {
+    "id": "ch2_08",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default",
+        "position": "left"
+      },
+      {
+        "name": "mira",
+        "pose": "default",
+        "position": "center"
+      },
+      {
+        "name": "kai",
+        "pose": "default",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Luna",
+      "text": {
+        "vi": "Vậy… chúng ta đi đường nào tới cánh cửa đây?",
+        "en": "So… which way do we take to the door?"
+      }
+    },
+    "choices": [
+      {
+        "text": {
+          "vi": "Đi theo lối mòn ánh trăng",
+          "en": "Follow the moonlit trail"
+        },
+        "next": "ch2_moon_path"
+      },
+      {
+        "text": {
+          "vi": "Băng qua đường tắt trong rừng",
+          "en": "Take the shortcut through the woods"
+        },
+        "next": "ch2_shortcut"
+      }
+    ]
+  },
+  {
+    "id": "ch2_moon_path",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "happy",
+        "position": "left"
+      },
+      {
+        "name": "mira",
+        "pose": "happy",
+        "position": "center"
+      },
+      {
+        "name": "kai",
+        "pose": "default",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Mira",
+      "text": {
+        "vi": "Lựa chọn khôn ngoan. Ánh trăng không bao giờ nói dối.",
+        "en": "A wise choice. The moonlight never lies."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_end"
+      }
+    ]
+  },
+  {
+    "id": "ch2_shortcut",
+    "bg": "forest",
+    "char": [
+      {
+        "name": "luna",
+        "pose": "default",
+        "position": "left"
+      },
+      {
+        "name": "mira",
+        "pose": "default",
+        "position": "center"
+      },
+      {
+        "name": "kai",
+        "pose": "sad",
+        "position": "right"
+      }
+    ],
+    "textbox": {
+      "name": "Kai",
+      "text": {
+        "vi": "…Tớ có linh cảm không lành về chuyện này.",
+        "en": "…I've got a bad feeling about this."
+      }
+    },
+    "choices": [
+      {
+        "text": null,
+        "next": "ch2_end"
+      }
+    ]
+  },
+  {
+    "id": "ch2_end",
+    "bg": "moonrise",
+    "card": {
+      "type": "end",
+      "eyebrow": {
+        "vi": "Hết chương 2",
+        "en": "End of Chapter 2"
+      },
+      "title": {
+        "vi": "Ba Người Dưới Trăng",
+        "en": "Three Under the Moon"
+      },
+      "subtitle": {
+        "vi": "Cảm ơn bạn đã chơi bản demo. Hẹn gặp lại ở chương tiếp theo…",
+        "en": "Thank you for playing the demo. See you in the next chapter…"
+      }
     }
   }
 ]

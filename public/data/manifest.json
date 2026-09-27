@@ -1,23 +1,130 @@
 {
-	"backgrounds": [
-		{
-			"id": "image",
-			"file": "image.png",
-			"name": "image"
-		}
-	],
-	"characters": [
-		{
-			"id": "sample",
-			"name": "Sample",
-			"poses": [
-				{
-					"id": "default"
-				},
-				{
-					"id": "happy"
-				}
-			]
-		}
-	]
+  "backgrounds": [
+    {
+      "id": "shelter",
+      "file": "shelter.png",
+      "name": {
+        "vi": "Nơi trú ẩn",
+        "en": "Shelter"
+      }
+    },
+    {
+      "id": "night",
+      "file": "night.png",
+      "name": {
+        "vi": "Đêm trăng",
+        "en": "Moonlit Night"
+      }
+    },
+    {
+      "id": "forest",
+      "file": "forest.png",
+      "name": {
+        "vi": "Bìa rừng",
+        "en": "Forest's Edge"
+      }
+    },
+    {
+      "id": "sad",
+      "file": "sad.png",
+      "name": {
+        "vi": "Đêm buồn",
+        "en": "Sorrowful Night"
+      }
+    },
+    {
+      "id": "moonrise",
+      "file": "moonrise.png",
+      "name": {
+        "vi": "Trăng lên",
+        "en": "Moonrise"
+      }
+    }
+  ],
+  "characters": [
+    {
+      "id": "ame",
+      "name": "Ame",
+      "poses": [
+        "default"
+      ],
+      "color": "#9fd8c4"
+    },
+    {
+      "id": "luna",
+      "name": "Luna",
+      "poses": [
+        "default",
+        "happy",
+        "sad"
+      ],
+      "color": "#b79cff"
+    },
+    {
+      "id": "kai",
+      "name": "Kai",
+      "poses": [
+        "default",
+        "happy",
+        "sad"
+      ],
+      "color": "#7fd4ff"
+    },
+    {
+      "id": "mira",
+      "name": "Mira",
+      "poses": [
+        "default",
+        "happy",
+        "sad"
+      ],
+      "color": "#f2a6c8"
+    }
+  ],
+  "cgs": [
+    {
+      "id": "first_night",
+      "name": {
+        "vi": "Đêm trăng đầu tiên",
+        "en": "The First Moonlit Night"
+      },
+      "chapter": {
+        "vi": "Chương 1",
+        "en": "Chapter 1"
+      }
+    },
+    {
+      "id": "mirror_lake",
+      "name": {
+        "vi": "Hồ gương",
+        "en": "Mirror Lake"
+      },
+      "chapter": {
+        "vi": "Chương 1 · Tuyến A",
+        "en": "Chapter 1 · Route A"
+      }
+    },
+    {
+      "id": "farewell",
+      "name": {
+        "vi": "Lời hứa dưới trăng",
+        "en": "A Promise Under the Moon"
+      },
+      "chapter": {
+        "vi": "Chương 1 · Tuyến B",
+        "en": "Chapter 1 · Route B"
+      }
+    },
+    {
+      "id": "forest_edge",
+      "name": {
+        "vi": "Bìa rừng thì thầm",
+        "en": "Whispers at the Forest's Edge"
+      },
+      "chapter": {
+        "vi": "Chương 2",
+        "en": "Chapter 2"
+      }
+    }
+  ]
 }
