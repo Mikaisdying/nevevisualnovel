@@ -1,48 +1,42 @@
-/**
- * Asset API
- * Handles fetching and managing asset data
- */
+export type AssetType = 'bg' | 'char' | 'cg' | 'audio';
 
 export interface Asset {
   id: string;
   name: string;
-  type: 'bg' | 'char' | 'cg' | 'audio';
-  path: string;
+  type: AssetType;
+  url: string;
+  characterId?: string;
 }
 
-export const getAssets = async (type?: string): Promise<Asset[]> => {
-  try {
-    console.log('Getting assets for type:', type);
-    return [];
-  } catch (error) {
-    console.error('Failed to load assets:', error);
-    throw error;
-  }
+export const getAssetsByType = async (type: AssetType): Promise<Asset[]> => {
+  const res = await fetch(`/api/assets?type=${type}`);
+  if (!res.ok) throw new Error(`Failed to load ${type} assets`);
+  return res.json();
 };
 
-export const getAssetsByType = async (type: 'bg' | 'char' | 'cg' | 'audio'): Promise<Asset[]> => {
-  try {
-    const response = await fetch(`/public/assets/${type}`);
-    return await response.json();
-  } catch (error) {
-    console.error(`Failed to load ${type} assets:`, error);
-    throw error;
-  }
+export const getAssets = async (): Promise<Asset[]> => {
+  const res = await fetch('/api/assets');
+  if (!res.ok) throw new Error('Failed to load assets');
+  return res.json();
 };
 
-export const uploadAsset = async (file: File, type: string) => {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', type);
+export const uploadAsset = async (
+  file: File,
+  type: AssetType,
+  characterId?: string,
+): Promise<{ success: boolean; file: Asset }> => {
+  const formData = new FormData();
+  formData.append('type', type);
+  if (characterId) formData.append('characterId', characterId);
+  formData.append('file', file);
 
-    const response = await fetch('/api/assets/upload', {
-      method: 'POST',
-      body: formData,
-    });
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to upload asset:', error);
-    throw error;
+  const res = await fetch('/api/assets/upload', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error ?? 'Upload failed');
   }
+  return res.json();
 };

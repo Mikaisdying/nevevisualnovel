@@ -5,7 +5,15 @@ import { AlignLeft, FolderOpen } from 'lucide-react';
 import type { MenuProps } from 'antd';
 import { Button, Menu, Typography } from 'antd';
 import AssetModal from './AssetModal';
+import type { AssetType } from '../api/asset.api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const ASSET_TYPE_BY_KEY: Record<string, AssetType> = {
+  'assets-backgrounds': 'bg',
+  'assets-characters': 'char',
+  'assets-cg': 'cg',
+  'assets-audio': 'audio',
+};
 
 const menuItems: MenuProps['items'] = [
   {
@@ -15,6 +23,7 @@ const menuItems: MenuProps['items'] = [
     children: [
       { key: 'assets-backgrounds', label: 'Backgrounds' },
       { key: 'assets-characters', label: 'Characters' },
+      { key: 'assets-cg', label: 'CG' },
       { key: 'assets-audio', label: 'Audio' },
     ],
   },
@@ -37,6 +46,7 @@ export default function SidebarPanel({ collapsed, onToggleCollapsed }: SidebarPa
   const [selectedKeys, setSelectedKeys] = useState<string[]>(['assets']);
   const [openKeys, setOpenKeys] = useState<string[]>(['assets']);
   const [assetModalOpen, setAssetModalOpen] = useState(false);
+  const [assetModalType, setAssetModalType] = useState<AssetType>('bg');
 
   const activeGroupKey = getActiveGroupKey(selectedKeys[0]);
 
@@ -80,6 +90,7 @@ export default function SidebarPanel({ collapsed, onToggleCollapsed }: SidebarPa
         onClick={({ key }) => {
           setSelectedKeys([key]);
           if (key === 'assets' || key.startsWith('assets-')) {
+            setAssetModalType(ASSET_TYPE_BY_KEY[key] ?? 'bg');
             setAssetModalOpen(true);
           }
         }}
@@ -87,7 +98,11 @@ export default function SidebarPanel({ collapsed, onToggleCollapsed }: SidebarPa
         className="flex-1 border-r-0 bg-transparent"
         style={{ background: 'transparent' }}
       />
-      <AssetModal open={assetModalOpen} onCancel={() => setAssetModalOpen(false)} />
+      <AssetModal
+        open={assetModalOpen}
+        onCancel={() => setAssetModalOpen(false)}
+        initialType={assetModalType}
+      />
     </div>
   );
 }

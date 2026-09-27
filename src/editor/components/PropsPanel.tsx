@@ -1,9 +1,32 @@
-import { Form, Input, Select, Typography, Button, Space, Checkbox, Divider, Tooltip } from 'antd';
+import {
+  Form,
+  Input,
+  Select,
+  AutoComplete,
+  Typography,
+  Button,
+  Space,
+  Checkbox,
+  Divider,
+  Tooltip,
+  Segmented,
+  message,
+} from 'antd';
 import { CloseOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import type { Scene, CharacterPosition } from '@/types/scene';
 import { loadManifest } from '../api/manifest.api';
 import { loadStoryline, saveStoryline } from '../api/story.api';
+import { useEditorLanguage } from '../editorLanguage';
+import {
+  LANGUAGES,
+  exactLocalized,
+  hasText,
+  localize,
+  setLocalized,
+  type Language,
+  type LocalizedText,
+} from '@/i18n/localize';
 
 const { TextArea } = Input;
 
@@ -14,7 +37,7 @@ type Character = {
   position?: CharacterPosition;
   focus?: boolean;
 };
-type Choice = { id: string; text?: string; next?: string };
+type Choice = { id: string; text?: LocalizedText; next?: string };
 
 const sectionLabel = (text: string) => (
   <span
@@ -36,8 +59,18 @@ export default function PropsPanel({
   onSceneUpdated?: (scene: Scene) => void;
 }) {
   const [bg, setBg] = useState<string | undefined>(undefined);
-  const [speaker, setSpeaker] = useState<string>('');
-  const [text, setText] = useState<string>('');
+  const [cg, setCg] = useState<string | undefined>(undefined);
+  // Giữ nguyên bản song ngữ; ô nhập chỉ đọc-ghi bản dịch của ngôn ngữ đang soạn.
+  const [speaker, setSpeaker] = useState<LocalizedText>('');
+  const [text, setText] = useState<LocalizedText>('');
+  const editLang = useEditorLanguage((s) => s.language);
+  const setEditLang = useEditorLanguage((s) => s.setLanguage);
+  const otherLang: Language = LANGUAGES.find((l) => l.id !== editLang)!.id;
+  /** Gợi ý trong ô trống: bản dịch ngôn ngữ còn lại để người soạn dịch theo. */
+  const hint = (value: LocalizedText | undefined, fallback: string) => {
+    const other = exactLocalized(value, otherLang);
+    return other ? `${otherLang.toUpperCase()}: ${other}` : fallback;
+  };
   const [characters, setCharacters] = useState<Character[]>([]);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [draggingCharId, setDraggingCharId] = useState<string | null>(null);
@@ -45,6 +78,7 @@ export default function PropsPanel({
   const [sceneOptions, setSceneOptions] = useState<{ id: string; label: string }[]>([]);
 
   const [backgroundOptions, setBackgroundOptions] = useState<{ id: string; name: string }[]>([]);
+  const [cgOptions, setCgOptions] = useState<{ id: string; name: string }[]>([]);
   const [characterOptions, setCharacterOptions] = useState<
     { id: string; name: string; poses: string[] }[]
   >([]);
@@ -55,14 +89,19 @@ export default function PropsPanel({
         const data = await loadManifest();
         setBackgroundOptions(
           Array.isArray(data.backgrounds)
-            ? data.backgrounds.map((b: any) => ({ id: b.id, name: b.name ?? b.id }))
+            ? data.backgrounds.map((b: any) => ({ id: b.id, name: localize(b.name, editLang) || b.id }))
+            : [],
+        );
+        setCgOptions(
+          Array.isArray(data.cgs)
+            ? data.cgs.map((c: any) => ({ id: c.id, name: localize(c.name, editLang) || c.id }))
             : [],
         );
         setCharacterOptions(
           Array.isArray(data.characters)
             ? data.characters.map((c: any) => ({
                 id: c.id,
-                name: c.name ?? c.id,
+                name: localize(c.name, editLang) || c.id,
                 poses: Array.isArray(c.poses) && c.poses.length > 0 ? c.poses : ['normal'],
               }))
             : [],
@@ -83,11 +122,12 @@ export default function PropsPanel({
     };
 
     loadData();
-  }, []);
+  }, [editLang]);
 
-  useEffect(() => {
-    if (!scene) {
+  const syncFromScene = (source: Scene | null) => {
+    if (!source) {
       setBg(undefined);
+      setCg(undefined);
       setSpeaker('');
       setText('');
       setCharacters([]);
@@ -95,13 +135,14 @@ export default function PropsPanel({
       return;
     }
 
-    setBg(scene.bg);
-    setSpeaker(scene.textbox?.name ?? '');
-    setText(scene.textbox?.text ?? '');
+    setBg(source.bg);
+    setCg(source.cg);
+    setSpeaker(source.textbox?.name ?? '');
+    setText(source.textbox?.text ?? '');
 
     setCharacters(
-      scene.char
-        ? scene.char.map((c) => ({
+      source.char
+        ? source.char.map((c) => ({
             id: crypto.randomUUID(),
             name: c.name,
             pose: c.pose,
@@ -112,14 +153,18 @@ export default function PropsPanel({
     );
 
     setChoices(
-      scene.choices
-        ? scene.choices.map((c) => ({
+      source.choices
+        ? source.choices.map((c) => ({
             id: crypto.randomUUID(),
             text: c.text ?? undefined,
             next: c.next,
           }))
         : [],
     );
+  };
+
+  useEffect(() => {
+    syncFromScene(scene);
   }, [scene]);
 
   const addCharacter = () => {
@@ -139,6 +184,15 @@ export default function PropsPanel({
   // Lưu scene vào backend
   const handleSave = async () => {
     if (!scene) return;
+    try {
+      await saveScene(scene);
+    } catch (error) {
+      console.error('Failed to save scene:', error);
+      message.error(`Chưa lưu được scene: ${(error as Error).message}`);
+    }
+  };
+
+  const saveScene = async (scene: Scene) => {
     // Lấy toàn bộ storyline hiện tại
     const storyline = await loadStoryline();
     if (!Array.isArray(storyline)) return;
@@ -147,7 +201,8 @@ export default function PropsPanel({
     const newScene: Scene = {
       ...scene,
       bg,
-      textbox: { name: speaker, text },
+      cg,
+      textbox: { name: hasText(speaker) ? speaker : '', text },
       char: characters.map((c) => ({
         name: c.name ?? '',
         pose: c.pose ?? 'normal',
@@ -155,7 +210,7 @@ export default function PropsPanel({
         focus: c.focus,
       })),
       choices: choices.map((c) => ({
-        text: c.text === undefined || c.text === '' ? null : c.text,
+        text: hasText(c.text) ? c.text! : null,
         next: c.next ?? '',
       })),
     };
@@ -182,6 +237,15 @@ export default function PropsPanel({
         >
           {scene?.id ?? 'Properties'}
         </Typography.Text>
+        <Tooltip title="Ngôn ngữ đang soạn: thoại, tên người nói và lựa chọn">
+          <Segmented
+            size="small"
+            style={{ float: 'right' }}
+            value={editLang}
+            onChange={(v) => setEditLang(v as Language)}
+            options={LANGUAGES.map((l) => ({ value: l.id, label: l.short }))}
+          />
+        </Tooltip>
       </div>
 
       {/* ── Scrollable body ── */}
@@ -208,6 +272,28 @@ export default function PropsPanel({
             </Select>
           </Form.Item>
 
+          {/* CG */}
+          <Form.Item
+            label={sectionLabel('CG (tuỳ chọn)')}
+            style={{ marginBottom: 20 }}
+            labelCol={{ style: { paddingBottom: 2 } }}
+            extra="Khi chọn, CG sẽ thay thế background/nhân vật và được mở khoá trong Library."
+          >
+            <Select
+              placeholder="Không dùng CG"
+              allowClear
+              style={{ width: '100%' }}
+              value={cg}
+              onChange={(val) => setCg(val)}
+            >
+              {cgOptions.map((c) => (
+                <Select.Option key={c.id} value={c.id}>
+                  {c.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Divider style={{ margin: '0 0 20px', borderColor: '#f0f0f0' }} />
 
           {/* Hộp hội thoại */}
@@ -217,17 +303,31 @@ export default function PropsPanel({
             labelCol={{ style: { paddingBottom: 2 } }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <Input
-                placeholder="Tên nhân vật..."
-                value={speaker}
-                onChange={(e) => setSpeaker(e.target.value)}
+              <AutoComplete
+                value={exactLocalized(speaker, editLang)}
+                onChange={(val) => setSpeaker((s) => setLocalized(s, editLang, val ?? ''))}
+                allowClear
+                style={{ width: '100%' }}
+                placeholder={hint(speaker, 'Tên người nói... (để trống = không hiện bảng tên)')}
+                options={[
+                  { value: '', label: '— Không hiện bảng tên (người kể chuyện) —' },
+                  { value: '?', label: '? (Danh tính chưa rõ)' },
+                  { value: 'Unknown', label: 'Unknown (Danh tính chưa rõ)' },
+                  ...characterOptions.map((c) => ({ value: c.name, label: c.name })),
+                ]}
+                filterOption={(inputValue, option) =>
+                  (option?.label as string).toLowerCase().includes(inputValue.toLowerCase())
+                }
               />
               <TextArea
                 rows={2}
-                placeholder="Nội dung hội thoại..."
+                placeholder={hint(text, 'Nội dung hội thoại...')}
                 style={{ resize: 'vertical' }}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={exactLocalized(text, editLang)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setText((t) => setLocalized(t, editLang, val));
+                }}
               />
             </div>
           </Form.Item>
@@ -380,12 +480,14 @@ export default function PropsPanel({
                       size="middle"
                       variant="borderless"
                       style={{ flex: 1, padding: 0 }}
-                      placeholder="Nội dung lựa chọn..."
-                      value={choice.text}
+                      placeholder={hint(choice.text, 'Nội dung lựa chọn...')}
+                      value={exactLocalized(choice.text, editLang)}
                       onChange={(e) => {
                         const val = e.target.value;
                         setChoices((p) =>
-                          p.map((c) => (c.id === choice.id ? { ...c, text: val } : c)),
+                          p.map((c) =>
+                            c.id === choice.id ? { ...c, text: setLocalized(c.text, editLang, val) } : c,
+                          ),
                         );
                       }}
                     />
@@ -482,7 +584,11 @@ export default function PropsPanel({
         }}
       >
         <Tooltip title="Phục hồi">
-          <Button icon={<ReloadOutlined />} style={{ flexShrink: 0 }} />
+          <Button
+            icon={<ReloadOutlined />}
+            style={{ flexShrink: 0 }}
+            onClick={() => syncFromScene(scene)}
+          />
         </Tooltip>
 
         <Button type="primary" style={{ flex: 1 }} onClick={handleSave}>

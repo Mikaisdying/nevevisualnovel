@@ -1,9 +1,13 @@
 import React from 'react';
 import { loadManifest } from '../api/manifest.api';
 import { Modal, Space, Input, Button, Select, Switch } from 'antd';
+import type { Scene } from '@/types/scene';
+import { exactLocalized, type LocalizedText } from '@/i18n/localize';
+import { useEditorLanguage, withEditorText } from '../editorLanguage';
 
+/** `name` giữ nguyên cả bản song ngữ của scene tham chiếu; `text` / lựa chọn là chữ của ngôn ngữ đang soạn. */
 export type SceneFormState = {
-  name: string;
+  name: LocalizedText;
   text: string;
   characters: {
     id: string;
@@ -14,6 +18,47 @@ export type SceneFormState = {
   bg: string;
   choices: { text: string; next?: string }[];
 };
+
+/** Form mặc định cho scene mới: kế thừa tên người nói, nhân vật, nền từ scene tham chiếu. */
+export function formFromScene(scene?: Scene): SceneFormState {
+  return {
+    name: scene?.textbox?.name || '',
+    text: '',
+    characters: (scene?.char ?? []).slice(0, 2).map((character) => ({
+      id: character.name,
+      focus: !!character.focus,
+      pose: character.pose,
+      position: character.position,
+    })),
+    bg: scene?.bg || '',
+    choices: [],
+  };
+}
+
+export function sceneFromForm(id: string, form: SceneFormState): Scene {
+  return {
+    id,
+    textbox: {
+      name: form.name,
+      text: withEditorText(null, form.text),
+    },
+    bg: form.bg,
+    char: form.characters.length
+      ? form.characters.map((character) => ({
+          name: character.id,
+          pose: character.pose ?? 'normal',
+          position: character.position ?? 'center',
+          focus: character.focus,
+        }))
+      : undefined,
+    choices: form.choices.length
+      ? form.choices.map((c) => ({
+          text: withEditorText(null, c.text),
+          next: c.next ?? '',
+        }))
+      : undefined,
+  };
+}
 
 export type CharacterOption = {
   id: string;
@@ -31,6 +76,7 @@ type SceneNodeModalProps = {
 export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: SceneNodeModalProps) {
   const [characterList, setCharacterList] = React.useState<CharacterOption[]>([]);
   const [bgList, setBgList] = React.useState<string[]>([]);
+  const lang = useEditorLanguage((s) => s.language);
   React.useEffect(() => {
     loadManifest().then((data) => {
       if (Array.isArray(data.characters)) {
@@ -53,14 +99,14 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
       <Space orientation="vertical" style={{ width: '100%' }} size={12}>
         {/* NAME */}
         <Input
-          placeholder="Tên"
-          value={form.name}
-          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+          placeholder={`Tên (${lang.toUpperCase()})`}
+          value={exactLocalized(form.name, lang)}
+          onChange={(e) => setForm((f) => ({ ...f, name: withEditorText(f.name, e.target.value) }))}
         />
 
         {/* TEXT */}
         <Input.TextArea
-          placeholder="Nội dung thoại"
+          placeholder={`Nội dung thoại (${lang.toUpperCase()})`}
           value={form.text}
           onChange={(e) => setForm((f) => ({ ...f, text: e.target.value }))}
         />

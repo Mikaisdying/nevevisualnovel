@@ -1,4 +1,5 @@
 import { Scene } from '@/types/scene';
+import { editorText } from '../editorLanguage';
 
 export type GraphNode = {
   id: string;
@@ -55,7 +56,6 @@ export function buildGraphModel(scenes: Scene[]) {
   const nodeIdMap = new Map<string, string>();
   const graphNodes: GraphNode[] = [];
 
-  let groupIndex = 0;
 
   function isSameContext(a: Scene, b: Scene) {
     return a.bg === b.bg && JSON.stringify(a.char) === JSON.stringify(b.char);
@@ -96,7 +96,8 @@ export function buildGraphModel(scenes: Scene[]) {
       current = next;
     }
 
-    const nodeId = group.length === 1 ? scene.id : `group-${groupIndex++}`;
+    // Id card = id scene đầu tiên: ổn định khi nhóm gộp/tách, để editor nhớ được vị trí card.
+    const nodeId = scene.id;
 
     graphNodes.push({
       id: nodeId,
@@ -137,7 +138,7 @@ export function buildGraphModel(scenes: Scene[]) {
       graphEdges.push({
         source,
         target,
-        label: isAuto ? undefined : (c.text ?? undefined),
+        label: isAuto ? undefined : editorText(c.text) || undefined,
       });
     });
   });

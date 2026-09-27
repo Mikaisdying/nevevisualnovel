@@ -2,8 +2,10 @@ import React from 'react';
 import { Handle, Position, useReactFlow, NodeToolbar, type NodeProps } from '@xyflow/react';
 import type { Scene } from '@/types/scene';
 import { Card, Space, Tag, Typography } from 'antd';
-import { loadManifest } from '../api/manifest.api';
-import { AddSceneModal, type SceneFormState } from './AddSceneModal';
+import { AddSceneModal, formFromScene, sceneFromForm, type SceneFormState } from './AddSceneModal';
+import { useEditorActions } from '../editorActions';
+import { useEditorLanguage } from '../editorLanguage';
+import { localize } from '@/i18n/localize';
 
 const { Text } = Typography;
 
@@ -14,10 +16,6 @@ export type SceneNodeData = {
 
 export type SceneNoteNodeProps = NodeProps & {
   data: SceneNodeData;
-  onInsertScene: (index: number, scene: Scene) => void;
-  onDeleteNode: (scenes: Scene[]) => void;
-  createSceneId: () => string;
-  onSceneClick?: (scene: Scene) => void;
 };
 
 function InsertDivider({ onClick }: { onClick: () => void }) {
@@ -46,6 +44,7 @@ const SceneItem = React.memo(function SceneItem({
   scene: Scene;
   onClick?: () => void;
 }) {
+  const lang = useEditorLanguage((s) => s.language);
   if (!scene.textbox) return null;
 
   return (
@@ -62,33 +61,25 @@ const SceneItem = React.memo(function SceneItem({
       }}
     >
       <Space orientation="vertical" size={2}>
-        {scene.textbox.name && <Text type="secondary">{scene.textbox.name}</Text>}
-        <Text>{scene.textbox.text}</Text>
+        {scene.textbox.name && <Text type="secondary">{localize(scene.textbox.name, lang)}</Text>}
+        <Text>{localize(scene.textbox.text, lang)}</Text>
       </Space>
     </button>
   );
 });
 
-export function SceneNoteNode({
-  data,
-  selected,
-  onInsertScene,
-  onDeleteNode,
-  createSceneId,
-  onSceneClick,
-}: SceneNoteNodeProps) {
+export function SceneNoteNode({ id, data, selected }: SceneNoteNodeProps) {
   const { scenes, nodeIdMap } = data;
+  const actions = useEditorActions();
+  const lang = useEditorLanguage((s) => s.language);
+  const onInsertScene = (index: number, scene: Scene) => actions.insertScene(scenes, index, scene);
+  const onDeleteNode = (nodeScenes: Scene[]) => actions.deleteNode(nodeScenes);
+  const onSceneClick = (scene: Scene) => actions.selectScene(id, scene);
   const first = scenes[0];
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
-  const [form, setForm] = React.useState<SceneFormState>({
-    name: '',
-    text: '',
-    characters: [],
-    bg: '',
-    choices: [],
-  });
+  const [form, setForm] = React.useState<SceneFormState>(() => formFromScene());
 
   const { setCenter, getNode, setNodes } = useReactFlow();
 
@@ -118,20 +109,7 @@ export function SceneNoteNode({
     const sourceScene = scenes[index] ?? scenes[scenes.length - 1];
 
     setModalIndex(index);
-    setForm({
-      name: sourceScene?.textbox?.name || '',
-      text: '',
-      characters: sourceScene
-        ? (sourceScene.char ?? []).slice(0, 2).map((character) => ({
-            id: character.name,
-            focus: !!character.focus,
-            pose: character.pose,
-            position: character.position,
-          }))
-        : [],
-      bg: sourceScene?.bg || '',
-      choices: [],
-    });
+    setForm(formFromScene(sourceScene));
     setIsModalOpen(true);
   };
 
@@ -173,6 +151,7 @@ export function SceneNoteNode({
 
       <Card
         size="small"
+        className="scene-card"
         title={
           <div
             style={{
@@ -205,7 +184,7 @@ export function SceneNoteNode({
           {scenes.map((scene, i) => {
             return (
               <React.Fragment key={scene.id}>
-                <SceneItem scene={scene} onClick={() => onSceneClick?.(scene)} />
+                <SceneItem scene={scene} onClick={() => onSceneClick(scene)} />
                 <InsertDivider onClick={() => openModal(i)} />
               </React.Fragment>
             );
@@ -225,7 +204,7 @@ export function SceneNoteNode({
                 }}
               >
                 <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                  <span>→ {c.text ?? 'next'}</span>
+                  <span>→ {c.text === null ? 'next' : localize(c.text, lang)}</span>
                   <Tag>{c.next}</Tag>
                 </Space>
               </Card>
@@ -241,28 +220,7 @@ export function SceneNoteNode({
         onSubmit={() => {
           if (modalIndex === null) return;
 
-          const newScene: Scene = {
-            id: createSceneId(),
-            textbox: {
-              name: form.name,
-              text: form.text,
-            },
-            bg: form.bg,
-            char: form.characters.length
-              ? form.characters.map((character) => ({
-                  name: character.id,
-                  pose: character.pose ?? 'normal',
-                  position: character.position ?? 'center',
-                  focus: character.focus,
-                }))
-              : undefined,
-            choices: form.choices.length
-              ? form.choices.map((c) => ({
-                  text: c.text,
-                  next: c.next ?? '',
-                }))
-              : undefined,
-          };
+          const newScene = sceneFromForm(actions.createSceneId(), form);
 
           onInsertScene(modalIndex, newScene);
           setIsModalOpen(false);
