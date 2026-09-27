@@ -1,14 +1,14 @@
 import React from 'react';
 import { loadManifest } from '../api/manifest.api';
-import { Modal, Space, Input, Button, Select, Switch } from 'antd';
+import { Modal, Space, Button, Select, Switch } from 'antd';
 import type { Scene } from '@/types/scene';
-import { exactLocalized, type LocalizedText } from '@/i18n/localize';
-import { useEditorLanguage, withEditorText } from '../editorLanguage';
+import { hasText, type LocalizedText } from '@/i18n/localize';
+import { BilingualField } from './BilingualField';
 
-/** `name` giữ nguyên cả bản song ngữ của scene tham chiếu; `text` / lựa chọn là chữ của ngôn ngữ đang soạn. */
+/** Mọi chữ soạn song ngữ; `name` kế thừa cả bản song ngữ của scene tham chiếu. */
 export type SceneFormState = {
   name: LocalizedText;
-  text: string;
+  text: LocalizedText;
   characters: {
     id: string;
     focus: boolean;
@@ -16,7 +16,7 @@ export type SceneFormState = {
     position?: 'left' | 'center' | 'right';
   }[];
   bg: string;
-  choices: { text: string; next?: string }[];
+  choices: { text: LocalizedText; next?: string }[];
 };
 
 /** Form mặc định cho scene mới: kế thừa tên người nói, nhân vật, nền từ scene tham chiếu. */
@@ -40,7 +40,7 @@ export function sceneFromForm(id: string, form: SceneFormState): Scene {
     id,
     textbox: {
       name: form.name,
-      text: withEditorText(null, form.text),
+      text: form.text,
     },
     bg: form.bg,
     char: form.characters.length
@@ -53,7 +53,7 @@ export function sceneFromForm(id: string, form: SceneFormState): Scene {
       : undefined,
     choices: form.choices.length
       ? form.choices.map((c) => ({
-          text: withEditorText(null, c.text),
+          text: hasText(c.text) ? c.text : '',
           next: c.next ?? '',
         }))
       : undefined,
@@ -76,7 +76,6 @@ type SceneNodeModalProps = {
 export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: SceneNodeModalProps) {
   const [characterList, setCharacterList] = React.useState<CharacterOption[]>([]);
   const [bgList, setBgList] = React.useState<string[]>([]);
-  const lang = useEditorLanguage((s) => s.language);
   React.useEffect(() => {
     loadManifest().then((data) => {
       if (Array.isArray(data.characters)) {
@@ -98,17 +97,18 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
     >
       <Space orientation="vertical" style={{ width: '100%' }} size={12}>
         {/* NAME */}
-        <Input
-          placeholder={`Tên (${lang.toUpperCase()})`}
-          value={exactLocalized(form.name, lang)}
-          onChange={(e) => setForm((f) => ({ ...f, name: withEditorText(f.name, e.target.value) }))}
+        <BilingualField
+          placeholder="Tên người nói"
+          value={form.name}
+          onChange={(name) => setForm((f) => ({ ...f, name }))}
         />
 
         {/* TEXT */}
-        <Input.TextArea
-          placeholder={`Nội dung thoại (${lang.toUpperCase()})`}
+        <BilingualField
+          multiline
+          placeholder="Nội dung thoại"
           value={form.text}
-          onChange={(e) => setForm((f) => ({ ...f, text: e.target.value }))}
+          onChange={(text) => setForm((f) => ({ ...f, text }))}
         />
 
         {/* CHARACTERS */}
@@ -200,16 +200,15 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
 
           <Space orientation="vertical" style={{ width: '100%' }}>
             {form.choices.map((choice, i) => (
-              <Space key={i} style={{ width: '100%' }}>
-                <Input
+              <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                <BilingualField
                   placeholder="Nội dung lựa chọn"
                   value={choice.text}
-                  onChange={(e) =>
-                    setForm((f) => {
-                      const next = [...f.choices];
-                      next[i].text = e.target.value;
-                      return { ...f, choices: next };
-                    })
+                  onChange={(text) =>
+                    setForm((f) => ({
+                      ...f,
+                      choices: f.choices.map((c, idx) => (idx === i ? { ...c, text } : c)),
+                    }))
                   }
                 />
 
@@ -224,7 +223,7 @@ export function AddSceneModal({ open, form, setForm, onSubmit, onCancel }: Scene
                 >
                   x
                 </Button>
-              </Space>
+              </div>
             ))}
 
             <Button

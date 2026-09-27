@@ -12,9 +12,12 @@ export type ChoiceLinkRequest = {
   currentAutoTarget?: string;
 };
 
+/** Chữ lựa chọn: tiếng Việt bắt buộc, tiếng Anh để trống = dùng tiếng Việt. */
+export type ChoiceLinkText = { vi: string; en: string };
+
 type ChoiceLinkModalProps = {
   request: ChoiceLinkRequest | null;
-  onSubmit: (text: string | null) => void;
+  onSubmit: (text: ChoiceLinkText | null) => void;
   onCancel: () => void;
 };
 
@@ -25,19 +28,20 @@ type ChoiceLinkModalProps = {
  */
 export function ChoiceLinkModal({ request, onSubmit, onCancel }: ChoiceLinkModalProps) {
   const [text, setText] = React.useState('');
+  const [textEn, setTextEn] = React.useState('');
   const [error, setError] = React.useState(false);
   const inputRef = React.useRef<InputRef>(null);
 
   React.useEffect(() => {
     if (request) {
       setText('');
+      setTextEn('');
       setError(false);
     }
   }, [request]);
 
   const mustHaveText = (request?.existingChoices ?? 0) > 0;
-  const replacesAuto =
-    !!request?.currentAutoTarget && request.currentAutoTarget !== request.toId;
+  const replacesAuto = !!request?.currentAutoTarget && request.currentAutoTarget !== request.toId;
 
   const submit = () => {
     const value = text.trim();
@@ -46,7 +50,7 @@ export function ChoiceLinkModal({ request, onSubmit, onCancel }: ChoiceLinkModal
       inputRef.current?.focus();
       return;
     }
-    onSubmit(value || null);
+    onSubmit(value ? { vi: value, en: textEn.trim() } : null);
   };
 
   return (
@@ -70,13 +74,33 @@ export function ChoiceLinkModal({ request, onSubmit, onCancel }: ChoiceLinkModal
             ref={inputRef}
             value={text}
             status={error ? 'error' : undefined}
-            placeholder={mustHaveText ? 'Nhập chữ cho lựa chọn…' : 'Nhập lựa chọn, hoặc để trống = nối tiếp'}
+            prefix={
+              <Text type="secondary" style={{ fontSize: 10 }}>
+                VI
+              </Text>
+            }
+            placeholder={
+              mustHaveText ? 'Nhập chữ cho lựa chọn…' : 'Nhập lựa chọn, hoặc để trống = nối tiếp'
+            }
             onChange={(e) => {
               setText(e.target.value);
               setError(false);
             }}
             onPressEnter={submit}
           />
+          {text.trim() && (
+            <Input
+              value={textEn}
+              prefix={
+                <Text type="secondary" style={{ fontSize: 10 }}>
+                  EN
+                </Text>
+              }
+              placeholder="English (để trống = dùng tiếng Việt)"
+              onChange={(e) => setTextEn(e.target.value)}
+              onPressEnter={submit}
+            />
+          )}
           <Text type="secondary" style={{ fontSize: 12 }}>
             {text.trim()
               ? 'Enter: tạo nút lựa chọn — người chơi bấm vào sẽ sang card đích.'

@@ -1,6 +1,5 @@
 import {
   Form,
-  Input,
   Select,
   AutoComplete,
   Typography,
@@ -9,7 +8,6 @@ import {
   Checkbox,
   Divider,
   Tooltip,
-  Segmented,
   message,
 } from 'antd';
 import { CloseOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
@@ -17,18 +15,9 @@ import { useEffect, useState } from 'react';
 import type { Scene, CharacterPosition } from '@/types/scene';
 import { loadManifest } from '../api/manifest.api';
 import { loadStoryline, saveStoryline } from '../api/story.api';
-import { useEditorLanguage } from '../editorLanguage';
-import {
-  LANGUAGES,
-  exactLocalized,
-  hasText,
-  localize,
-  setLocalized,
-  type Language,
-  type LocalizedText,
-} from '@/i18n/localize';
-
-const { TextArea } = Input;
+import { editorText } from '../editorLanguage';
+import { BilingualField } from './BilingualField';
+import { hasText, type LocalizedText } from '@/i18n/localize';
 
 type Character = {
   id: string;
@@ -60,17 +49,9 @@ export default function PropsPanel({
 }) {
   const [bg, setBg] = useState<string | undefined>(undefined);
   const [cg, setCg] = useState<string | undefined>(undefined);
-  // Giữ nguyên bản song ngữ; ô nhập chỉ đọc-ghi bản dịch của ngôn ngữ đang soạn.
+  // Giữ nguyên bản song ngữ; soạn song song tiếng Việt và tiếng Anh.
   const [speaker, setSpeaker] = useState<LocalizedText>('');
   const [text, setText] = useState<LocalizedText>('');
-  const editLang = useEditorLanguage((s) => s.language);
-  const setEditLang = useEditorLanguage((s) => s.setLanguage);
-  const otherLang: Language = LANGUAGES.find((l) => l.id !== editLang)!.id;
-  /** Gợi ý trong ô trống: bản dịch ngôn ngữ còn lại để người soạn dịch theo. */
-  const hint = (value: LocalizedText | undefined, fallback: string) => {
-    const other = exactLocalized(value, otherLang);
-    return other ? `${otherLang.toUpperCase()}: ${other}` : fallback;
-  };
   const [characters, setCharacters] = useState<Character[]>([]);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [draggingCharId, setDraggingCharId] = useState<string | null>(null);
@@ -89,19 +70,19 @@ export default function PropsPanel({
         const data = await loadManifest();
         setBackgroundOptions(
           Array.isArray(data.backgrounds)
-            ? data.backgrounds.map((b: any) => ({ id: b.id, name: localize(b.name, editLang) || b.id }))
+            ? data.backgrounds.map((b: any) => ({ id: b.id, name: editorText(b.name) || b.id }))
             : [],
         );
         setCgOptions(
           Array.isArray(data.cgs)
-            ? data.cgs.map((c: any) => ({ id: c.id, name: localize(c.name, editLang) || c.id }))
+            ? data.cgs.map((c: any) => ({ id: c.id, name: editorText(c.name) || c.id }))
             : [],
         );
         setCharacterOptions(
           Array.isArray(data.characters)
             ? data.characters.map((c: any) => ({
                 id: c.id,
-                name: localize(c.name, editLang) || c.id,
+                name: editorText(c.name) || c.id,
                 poses: Array.isArray(c.poses) && c.poses.length > 0 ? c.poses : ['normal'],
               }))
             : [],
@@ -122,7 +103,7 @@ export default function PropsPanel({
     };
 
     loadData();
-  }, [editLang]);
+  }, []);
 
   const syncFromScene = (source: Scene | null) => {
     if (!source) {
@@ -237,15 +218,6 @@ export default function PropsPanel({
         >
           {scene?.id ?? 'Properties'}
         </Typography.Text>
-        <Tooltip title="Ngôn ngữ đang soạn: thoại, tên người nói và lựa chọn">
-          <Segmented
-            size="small"
-            style={{ float: 'right' }}
-            value={editLang}
-            onChange={(v) => setEditLang(v as Language)}
-            options={LANGUAGES.map((l) => ({ value: l.id, label: l.short }))}
-          />
-        </Tooltip>
       </div>
 
       {/* ── Scrollable body ── */}
@@ -302,32 +274,35 @@ export default function PropsPanel({
             style={{ marginBottom: 20 }}
             labelCol={{ style: { paddingBottom: 2 } }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <AutoComplete
-                value={exactLocalized(speaker, editLang)}
-                onChange={(val) => setSpeaker((s) => setLocalized(s, editLang, val ?? ''))}
-                allowClear
-                style={{ width: '100%' }}
-                placeholder={hint(speaker, 'Tên người nói... (để trống = không hiện bảng tên)')}
-                options={[
-                  { value: '', label: '— Không hiện bảng tên (người kể chuyện) —' },
-                  { value: '?', label: '? (Danh tính chưa rõ)' },
-                  { value: 'Unknown', label: 'Unknown (Danh tính chưa rõ)' },
-                  ...characterOptions.map((c) => ({ value: c.name, label: c.name })),
-                ]}
-                filterOption={(inputValue, option) =>
-                  (option?.label as string).toLowerCase().includes(inputValue.toLowerCase())
-                }
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <BilingualField
+                value={speaker}
+                onChange={setSpeaker}
+                placeholder="Tên người nói... (để trống = không hiện bảng tên)"
+                renderInput={({ value, onChange, placeholder }) => (
+                  <AutoComplete
+                    value={value}
+                    onChange={(val) => onChange(val ?? '')}
+                    allowClear
+                    style={{ width: '100%' }}
+                    placeholder={placeholder}
+                    options={[
+                      { value: '', label: '— Không hiện bảng tên (người kể chuyện) —' },
+                      { value: '?', label: '? (Danh tính chưa rõ)' },
+                      { value: 'Unknown', label: 'Unknown (Danh tính chưa rõ)' },
+                      ...characterOptions.map((c) => ({ value: c.name, label: c.name })),
+                    ]}
+                    filterOption={(inputValue, option) =>
+                      (option?.label as string).toLowerCase().includes(inputValue.toLowerCase())
+                    }
+                  />
+                )}
               />
-              <TextArea
-                rows={2}
-                placeholder={hint(text, 'Nội dung hội thoại...')}
-                style={{ resize: 'vertical' }}
-                value={exactLocalized(text, editLang)}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setText((t) => setLocalized(t, editLang, val));
-                }}
+              <BilingualField
+                value={text}
+                onChange={setText}
+                multiline
+                placeholder="Nội dung hội thoại..."
               />
             </div>
           </Form.Item>
@@ -462,7 +437,7 @@ export default function PropsPanel({
                   <div
                     style={{
                       display: 'flex',
-                      alignItems: 'center',
+                      alignItems: 'flex-start',
                       gap: 8,
                     }}
                   >
@@ -472,31 +447,29 @@ export default function PropsPanel({
                         color: '#94a3b8',
                         fontWeight: 600,
                         minWidth: 14,
+                        paddingTop: 6,
                       }}
                     >
                       {i + 1}
                     </span>
-                    <Input
-                      size="middle"
-                      variant="borderless"
-                      style={{ flex: 1, padding: 0 }}
-                      placeholder={hint(choice.text, 'Nội dung lựa chọn...')}
-                      value={exactLocalized(choice.text, editLang)}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setChoices((p) =>
-                          p.map((c) =>
-                            c.id === choice.id ? { ...c, text: setLocalized(c.text, editLang, val) } : c,
-                          ),
-                        );
-                      }}
-                    />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <BilingualField
+                        value={choice.text}
+                        placeholder="Nội dung lựa chọn..."
+                        onChange={(val) =>
+                          setChoices((p) =>
+                            p.map((c) => (c.id === choice.id ? { ...c, text: val } : c)),
+                          )
+                        }
+                      />
+                    </div>
                     <CloseOutlined
                       style={{
                         fontSize: 10,
                         color: '#cbd5e1',
                         cursor: 'pointer',
                         flexShrink: 0,
+                        paddingTop: 8,
                       }}
                       onClick={() => removeChoice(choice.id)}
                       onMouseEnter={(e) =>

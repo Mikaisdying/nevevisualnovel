@@ -1,29 +1,26 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { DEFAULT_LANGUAGE, localize, setLocalized, type Language, type LocalizedText } from '@/i18n/localize';
+import {
+  exactLocalized,
+  localize,
+  setLocalized,
+  type Language,
+  type LocalizedText,
+} from '@/i18n/localize';
 
-type EditorLanguageState = {
-  /** Ngôn ngữ đang soạn: ô nhập thoại / lựa chọn đọc-ghi bản dịch của ngôn ngữ này. */
-  language: Language;
-  setLanguage: (language: Language) => void;
+/** Ngôn ngữ chính của editor: chữ trên card / connector luôn hiện bằng tiếng Việt. */
+export const EDITOR_PRIMARY: Language = 'vi';
+/** Ngôn ngữ phụ soạn song song; bỏ trống thì game lùi về tiếng Việt. */
+export const EDITOR_SECONDARY: Language = 'en';
+
+/** Chữ hiển thị trên card / connector (thiếu tiếng Việt thì lùi về bản có sẵn). */
+export const editorText = (value: LocalizedText | null | undefined) =>
+  localize(value, EDITOR_PRIMARY);
+
+/** Bản dịch phụ để hiện kèm trên card — chỉ khi có và khác bản tiếng Việt. */
+export const editorSecondaryText = (value: LocalizedText | null | undefined) => {
+  const secondary = exactLocalized(value, EDITOR_SECONDARY);
+  return secondary && secondary !== exactLocalized(value, EDITOR_PRIMARY) ? secondary : '';
 };
 
-export const useEditorLanguage = create<EditorLanguageState>()(
-  persist(
-    (set) => ({
-      language: DEFAULT_LANGUAGE,
-      setLanguage: (language) => set({ language }),
-    }),
-    { name: 'neve-editor-language', storage: createJSONStorage(() => localStorage) },
-  ),
-);
-
-export const getEditorLanguage = () => useEditorLanguage.getState().language;
-
-/** Chữ hiển thị trên card / connector theo ngôn ngữ đang soạn (thiếu thì lùi về bản có sẵn). */
-export const editorText = (value: LocalizedText | null | undefined) =>
-  localize(value, getEditorLanguage());
-
-/** Ghi chữ vừa nhập vào bản dịch của ngôn ngữ đang soạn, giữ nguyên các bản khác. */
+/** Ghi chữ tiếng Việt vừa nhập, giữ nguyên các bản dịch khác. */
 export const withEditorText = (value: LocalizedText | null | undefined, text: string) =>
-  setLocalized(value, getEditorLanguage(), text);
+  setLocalized(value, EDITOR_PRIMARY, text);

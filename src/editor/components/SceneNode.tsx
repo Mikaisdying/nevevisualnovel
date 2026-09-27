@@ -4,8 +4,7 @@ import type { Scene } from '@/types/scene';
 import { Card, Space, Tag, Typography } from 'antd';
 import { AddSceneModal, formFromScene, sceneFromForm, type SceneFormState } from './AddSceneModal';
 import { useEditorActions } from '../editorActions';
-import { useEditorLanguage } from '../editorLanguage';
-import { localize } from '@/i18n/localize';
+import { editorSecondaryText, editorText } from '../editorLanguage';
 
 const { Text } = Typography;
 
@@ -44,8 +43,8 @@ const SceneItem = React.memo(function SceneItem({
   scene: Scene;
   onClick?: () => void;
 }) {
-  const lang = useEditorLanguage((s) => s.language);
   if (!scene.textbox) return null;
+  const secondary = editorSecondaryText(scene.textbox.text);
 
   return (
     <button
@@ -61,8 +60,13 @@ const SceneItem = React.memo(function SceneItem({
       }}
     >
       <Space orientation="vertical" size={2}>
-        {scene.textbox.name && <Text type="secondary">{localize(scene.textbox.name, lang)}</Text>}
-        <Text>{localize(scene.textbox.text, lang)}</Text>
+        {scene.textbox.name && <Text type="secondary">{editorText(scene.textbox.name)}</Text>}
+        <Text>{editorText(scene.textbox.text)}</Text>
+        {secondary && (
+          <Text type="secondary" italic style={{ fontSize: 12 }}>
+            {secondary}
+          </Text>
+        )}
       </Space>
     </button>
   );
@@ -71,7 +75,6 @@ const SceneItem = React.memo(function SceneItem({
 export function SceneNoteNode({ id, data, selected }: SceneNoteNodeProps) {
   const { scenes, nodeIdMap } = data;
   const actions = useEditorActions();
-  const lang = useEditorLanguage((s) => s.language);
   const onInsertScene = (index: number, scene: Scene) => actions.insertScene(scenes, index, scene);
   const onDeleteNode = (nodeScenes: Scene[]) => actions.deleteNode(nodeScenes);
   const onSceneClick = (scene: Scene) => actions.selectScene(id, scene);
@@ -204,7 +207,15 @@ export function SceneNoteNode({ id, data, selected }: SceneNoteNodeProps) {
                 }}
               >
                 <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                  <span>→ {c.text === null ? 'next' : localize(c.text, lang)}</span>
+                  <span>
+                    → {c.text === null ? 'next' : editorText(c.text)}
+                    {c.text !== null && editorSecondaryText(c.text) && (
+                      <Text type="secondary" italic style={{ fontSize: 12 }}>
+                        {' '}
+                        / {editorSecondaryText(c.text)}
+                      </Text>
+                    )}
+                  </span>
                   <Tag>{c.next}</Tag>
                 </Space>
               </Card>

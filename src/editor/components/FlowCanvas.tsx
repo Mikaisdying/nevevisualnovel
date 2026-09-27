@@ -28,11 +28,12 @@ import { MiniMap } from '@xyflow/react';
 import { flowToNodes, type XY } from '../utils/flowToNodes';
 import { loadStoryline, saveStoryline } from '../api/story.api';
 import type { Scene } from '@/types/scene';
+import { setLocalized, type LocalizedText } from '@/i18n/localize';
 import { SceneNoteNode, type SceneNoteNodeProps } from './SceneNode';
 import { AddSceneModal, formFromScene, sceneFromForm, type SceneFormState } from './AddSceneModal';
-import { ChoiceLinkModal, type ChoiceLinkRequest } from './ChoiceLinkModal';
+import { ChoiceLinkModal, type ChoiceLinkRequest, type ChoiceLinkText } from './ChoiceLinkModal';
 import { EditorActionsContext, useEditorActions, type EditorActions } from '../editorActions';
-import { useEditorLanguage, withEditorText } from '../editorLanguage';
+import { EDITOR_SECONDARY, withEditorText } from '../editorLanguage';
 import '../editor.css';
 
 // ---------------------------------------------------------------------------
@@ -66,8 +67,18 @@ type SceneWithNext = Scene & { next?: string };
  * Nối scene `fromId` tới `toId`.
  * - `text` có chữ → lựa chọn (bấm vào sang toId); thay nối tiếp cũ nếu có, cập nhật chữ nếu đã có lựa chọn tới toId.
  * - `text` null → nối tiếp (thoại liên tục), thay đích nối tiếp cũ.
+ * Bản tiếng Anh để trống thì giữ nguyên bản cũ (nếu có).
  */
-function linkScenes(scenes: Scene[], fromId: string, toId: string, text: string | null): Scene[] {
+function linkScenes(
+  scenes: Scene[],
+  fromId: string,
+  toId: string,
+  text: ChoiceLinkText | null,
+): Scene[] {
+  const withText = (prev: LocalizedText | null) => {
+    const vi = withEditorText(prev, text!.vi);
+    return text!.en ? setLocalized(vi, EDITOR_SECONDARY, text!.en) : vi;
+  };
   return scenes.map((scene) => {
     if (scene.id !== fromId) return scene;
     let linked: SceneWithNext;
@@ -78,8 +89,8 @@ function linkScenes(scenes: Scene[], fromId: string, toId: string, text: string 
       linked = {
         ...scene,
         choices: displayChoices.some((c) => c.next === toId)
-          ? displayChoices.map((c) => (c.next === toId ? { ...c, text: withEditorText(c.text, text) } : c))
-          : [...displayChoices, { text: withEditorText(null, text), next: toId }],
+          ? displayChoices.map((c) => (c.next === toId ? { ...c, text: withText(c.text) } : c))
+          : [...displayChoices, { text: withText(null), next: toId }],
       };
     }
     delete linked.next;
@@ -134,7 +145,9 @@ function ChoiceEdge({
         {label && (
           <div
             className="flow-edge-label"
-            style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY - (showDelete ? 22 : 0)}px)` }}
+            style={{
+              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY - (showDelete ? 22 : 0)}px)`,
+            }}
           >
             {label}
           </div>
@@ -235,8 +248,7 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
     loadData();
   }, [storyVersion, messageApi]);
 
-  // --- Dựng lại graph khi dữ liệu / ngôn ngữ soạn đổi, giữ nguyên vị trí card ---
-  const editLanguage = useEditorLanguage((s) => s.language);
+  // --- Dựng lại graph khi dữ liệu đổi, giữ nguyên vị trí card ---
   React.useEffect(() => {
     const { nodes: built, edges: builtEdges } = flowToNodes(scenes, positionsRef.current);
     built.forEach((n) => {
@@ -248,7 +260,7 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
       return built.map((n) => ({ ...n, selected: selected.has(n.id) }));
     });
     setEdges(builtEdges);
-  }, [scenes, editLanguage, setNodes, setEdges]);
+  }, [scenes, setNodes, setEdges]);
 
   const persist = React.useCallback(
     (next: Scene[]) => {
@@ -411,7 +423,9 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
 
         if (legacyNext && deletedIds.has(legacyNext)) {
           const nextScene = (
-            bridgeTarget ? { ...updatedScene, choices: [{ text: null, next: bridgeTarget }] } : { ...updatedScene }
+            bridgeTarget
+              ? { ...updatedScene, choices: [{ text: null, next: bridgeTarget }] }
+              : { ...updatedScene }
           ) as SceneWithNext;
           delete nextScene.next;
           updatedScene = nextScene;
@@ -433,7 +447,9 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
 
       commit(
         nextScenes,
-        groupScenes.length > 1 ? `Đã xóa ${groupScenes.length} scene` : `Đã xóa scene ${lastScene.id}`,
+        groupScenes.length > 1
+          ? `Đã xóa ${groupScenes.length} scene`
+          : `Đã xóa scene ${lastScene.id}`,
       );
       setSelectedEdgeId(null);
       onSceneSelect(null);
@@ -467,7 +483,9 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
         }
 
         if (updatedScene.choices?.some((choice) => targetSceneIds.has(choice.next))) {
-          const nextChoices = updatedScene.choices.filter((choice) => !targetSceneIds.has(choice.next));
+          const nextChoices = updatedScene.choices.filter(
+            (choice) => !targetSceneIds.has(choice.next),
+          );
           updatedScene = { ...updatedScene, choices: nextChoices.length ? nextChoices : undefined };
           changed = true;
         }
@@ -501,7 +519,7 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
     [getNodeScenesById],
   );
 
-  const submitLink = (text: string | null) => {
+  const submitLink = (text: ChoiceLinkText | null) => {
     if (!pendingLink) return;
     const { fromId, toId, newScene, position } = pendingLink;
     if (newScene && position) positionsRef.current[newScene.id] = position;
@@ -509,14 +527,16 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
     const toast = newScene
       ? `Đã thêm scene ${toId}`
       : text
-        ? `Đã tạo lựa chọn “${text}”`
+        ? `Đã tạo lựa chọn “${text.vi}”`
         : `Đã nối tiếp ${fromId} → ${toId}`;
     commit(linkScenes(base, fromId, toId, text), toast);
     setPendingLink(null);
   };
 
   // --- Kéo chấm nối ra chỗ trống → tạo scene mới tại điểm thả ---
-  const [pendingCreate, setPendingCreate] = React.useState<{ fromId: string; position: XY } | null>(null);
+  const [pendingCreate, setPendingCreate] = React.useState<{ fromId: string; position: XY } | null>(
+    null,
+  );
   const [createForm, setCreateForm] = React.useState<SceneFormState>(() => formFromScene());
 
   const handleConnectEnd: OnConnectEnd = React.useCallback(
@@ -540,7 +560,11 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
     const from = scenesRef.current.find((s) => s.id === pendingCreate.fromId);
     if (!from) return;
     const newScene = sceneFromForm(createSceneId(), createForm);
-    setPendingLink({ ...linkRequest(from, newScene.id), newScene, position: pendingCreate.position });
+    setPendingLink({
+      ...linkRequest(from, newScene.id),
+      newScene,
+      position: pendingCreate.position,
+    });
     setPendingCreate(null);
   };
 
@@ -602,7 +626,9 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
       positionsRef.current[n.id] = n.position;
     });
     writeLayout(positionsRef.current);
-    setNodes((prev) => prev.map((n) => ({ ...n, position: positionsRef.current[n.id] ?? n.position })));
+    setNodes((prev) =>
+      prev.map((n) => ({ ...n, position: positionsRef.current[n.id] ?? n.position })),
+    );
   };
 
   const actions: EditorActions = React.useMemo(
@@ -614,7 +640,14 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
       selectScene,
       setEdgeHover,
     }),
-    [handleInsertScene, handleDeleteNode, handleDeleteEdge, createSceneId, selectScene, setEdgeHover],
+    [
+      handleInsertScene,
+      handleDeleteNode,
+      handleDeleteEdge,
+      createSceneId,
+      selectScene,
+      setEdgeHover,
+    ],
   );
 
   // Màu connector: chọn (đỏ) > hover connector (đỏ nhạt) > thuộc card đang hover (tím, chạy) > thường.
@@ -623,7 +656,8 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
       edges.map((edge) => {
         const selected = selectedEdgeId === edge.id;
         const hovered = hoveredEdgeId === edge.id;
-        const related = !!hoveredNodeId && (edge.source === hoveredNodeId || edge.target === hoveredNodeId);
+        const related =
+          !!hoveredNodeId && (edge.source === hoveredNodeId || edge.target === hoveredNodeId);
         const color = selected ? '#ef4444' : hovered ? '#f87171' : related ? '#6366f1' : '#94a3b8';
         return {
           ...edge,
@@ -696,7 +730,11 @@ function FlowCanvasInner({ onSceneSelect, storyVersion }: FlowCanvasProps) {
         onCancel={() => setPendingCreate(null)}
         onSubmit={submitCreate}
       />
-      <ChoiceLinkModal request={pendingLink} onSubmit={submitLink} onCancel={() => setPendingLink(null)} />
+      <ChoiceLinkModal
+        request={pendingLink}
+        onSubmit={submitLink}
+        onCancel={() => setPendingLink(null)}
+      />
     </EditorActionsContext.Provider>
   );
 }
